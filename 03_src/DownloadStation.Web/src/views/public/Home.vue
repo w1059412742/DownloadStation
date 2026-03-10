@@ -1,17 +1,17 @@
 <template>
   <div class="animate-fade-in-up">
     <!-- Hero Section -->
-    <section class="pt-24 pb-16 px-6">
-      <div class="max-w-4xl mx-auto text-center">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground mb-6 animate-fade-in-up">
+    <section class="pt-4 pb-4 px-6 md:pt-6 md:pb-6">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-foreground mb-2 animate-fade-in-up">
           <span class="text-balance">发现优质软件</span>
         </h1>
-        <p class="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 text-pretty animate-fade-in-up" style="animation-delay: 100ms">
+        <p class="text-sm md:text-base text-muted-foreground max-w-xl mx-auto mb-4 text-pretty animate-fade-in-up" style="animation-delay: 100ms">
           精心挑选的高品质软件合集，提升您的工作效率与创作体验
         </p>
         <!-- SearchBar -->
         <div class="relative max-w-xl mx-auto animate-fade-in-up" style="animation-delay: 200ms">
-          <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <Search class="w-5 h-5 text-muted-foreground" />
           </div>
           <input
@@ -19,23 +19,23 @@
             v-model="filters.keyword"
             @keyup.enter="() => fetchSoftwares()"
             placeholder="搜索软件名称或功能..."
-            class="w-full h-14 pl-14 pr-6 bg-card border border-border rounded-2xl text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-card hover:shadow-card-hover"
+            class="w-full h-12 pl-12 pr-5 bg-card border border-border rounded-xl text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm hover:shadow-md"
           />
         </div>
       </div>
     </section>
 
     <!-- Software Section -->
-    <section class="max-w-7xl mx-auto px-6 pb-20">
+    <section class="max-w-7xl mx-auto px-6 pb-12">
       
       <!-- Filters (Category & Platform combined for simplicity) -->
-      <div class="space-y-6 mb-12">
+      <div class="space-y-4 mb-8">
         <!-- Category Filter -->
         <div class="flex items-center justify-center gap-2 flex-wrap">
           <button
             @click="setCategory('')"
             :class="[
-              'inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200',
+              'inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
               filters.categoryId === '' ? 'bg-foreground text-card shadow-sm' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
             ]"
           >
@@ -46,7 +46,7 @@
             :key="cat.id"
             @click="setCategory(cat.id)"
             :class="[
-              'inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200',
+              'inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
               filters.categoryId === cat.id ? 'bg-foreground text-card shadow-sm' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
             ]"
           >
@@ -80,12 +80,12 @@
       </div>
 
       <!-- Grid Layout -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative min-h-[400px]">
-        <div v-if="loading" class="absolute inset-0 flex items-center justify-center -top-20">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative min-h-[300px]">
+        <div v-if="loading" class="absolute inset-0 flex items-center justify-center -top-10">
           <Loader2 class="w-8 h-8 text-primary animate-spin" />
         </div>
         
-        <div v-else-if="softwares.length === 0" class="col-span-full text-center py-20">
+        <div v-else-if="softwares.length === 0" class="col-span-full text-center py-12">
            <SearchX class="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
            <p class="text-muted-foreground text-lg">未找到匹配的软件</p>
            <p class="text-muted-foreground/60 text-sm mt-2">尝试调整搜索关键词或筛选条件</p>

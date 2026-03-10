@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen flex flex-col bg-background selection:bg-primary selection:text-white">
+  <div class="h-screen flex flex-col overflow-hidden bg-background selection:bg-primary selection:text-white">
     <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/40 transition-colors duration-300">
+    <header class="flex-shrink-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/40 transition-colors duration-300">
       <div class="max-w-7xl mx-auto px-6">
         <div class="flex items-center justify-between h-16">
           <!-- Logo -->
@@ -31,25 +31,27 @@
       </div>
     </header>
 
-    <!-- Content -->
-    <main class="flex-1 w-full mx-auto container pt-16 px-4 sm:px-6 lg:px-8 pb-12">
-      <router-view v-slot="{ Component }">
-        <transition name="page-fade" mode="out-in">
-          <component :is="Component" />
-        </transition>
-      </router-view>
-    </main>
+    <!-- Scrollable Content -->
+    <div class="flex-1 overflow-y-auto flex flex-col w-full">
+      <main class="flex-1 w-full mx-auto container px-4 sm:px-6 lg:px-8 py-6">
+        <router-view v-slot="{ Component }">
+          <transition name="page-fade" mode="out-in">
+            <component :is="Component" />
+          </transition>
+        </router-view>
+      </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-border bg-card/50 mt-auto">
-      <div class="max-w-7xl mx-auto px-6 py-6">
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <p class="text-sm text-muted-foreground">
-            © {{ new Date().getFullYear() }} 下载站. All rights reserved.
-          </p>
+      <!-- Footer -->
+      <footer class="border-t border-border bg-card/50 mt-auto flex-shrink-0">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <p class="text-sm text-muted-foreground">
+              © {{ new Date().getFullYear() }} 下载站. All rights reserved.
+            </p>
+          </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
   </div>
 </template>
 
