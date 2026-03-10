@@ -1,0 +1,218 @@
+using DownloadStation.Server.Data;
+using DownloadStation.Server.Dtos.Requests;
+using DownloadStation.Server.Dtos.Responses;
+using DownloadStation.Server.Models;
+using DownloadStation.Server.Models.Enums;
+using DownloadStation.Server.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace DownloadStation.Server.Services.Implementations
+{
+    public class SoftwareService : ISoftwareService
+    {
+        private readonly AppDbContext _context;
+
+        public SoftwareService(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<PagedResult<SoftwareListResponse>> GetPagedListAsync(
+            string? categoryId, string? platformId, string? keyword, 
+            string? sortBy, bool includeDrafts, int page, int pageSize)
+        {
+            var query = _context.Softwares
+                .Include(s => s.Category)
+                .Include(s => s.Platform)
+                .AsQueryable();
+
+            if (!includeDrafts)
+            {
+                query = query.Where(s => s.Status == SoftwareStatus.Published);
+            }
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(s => s.Name.Contains(keyword) || (s.Summary != null && s.Summary.Contains(keyword)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(categoryId))
+            {
+                // 递归查找子分类，为了演示起见这里简单使用基于内存或者假设只有一级
+                // 严谨做法需要独立提取其所有后代项。这里简化处理为包含本类
+                var targetCategories = new List<string> { categoryId };
+
+                // 获取所有分类，在内存中构建关系
+                var allCategories = await _context.Categories.AsNoTracking().ToListAsync();
+                targetCategories.AddRange(GetDescendantCategoryIds(allCategories, categoryId));
+
+                query = query.Where(s => s.CategoryId != null && targetCategories.Contains(s.CategoryId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(platformId))
+            {
+                query = query.Where(s => s.PlatformId == platformId);
+            }
+
+            // 排序逻辑
+            if (sortBy?.ToLower() == "popular")
+            {
+                query = query.OrderByDescending(s => s.TotalDownloads).ThenByDescending(s => s.CreatedAt);
+            }
+            else
+            {
+                // 默认最新更新
+                query = query.OrderByDescending(s => s.UpdatedAt).ThenByDescending(s => s.CreatedAt);
+            }
+
+            var totalCount = await query.CountAsync();
+            var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            var mappedItems = items.Select(s => new SoftwareListResponse
+            {
+                Id = s.Id,
+                Name = s.Name,
+                Summary = s.Summary,
+                IconPath = s.IconPath,
+                CategoryName = s.Category?.Name,
+                Status = s.Status,
+                TotalDownloads = s.TotalDownloads,
+                UpdatedAt = s.UpdatedAt,
+                Platform = s.Platform == null ? null : new PlatformResponse
+                {
+                    Id = s.Platform.Id,
+                    Name = s.Platform.Name,
+                    IconClass = s.Platform.IconClass,
+                    ColorHex = s.Platform.ColorHex
+                }
+            });
+
+            return new PagedResult<SoftwareListResponse>
+            {
+                Items = mappedItems,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+
+        private IEnumerable<string> GetDescendantCategoryIds(List<Category> all, string parentId)
+        {
+            var children = all.Where(c => c.ParentId == parentId).Select(c => c.Id).ToList();
+            var descendants = new List<string>(children);
+            foreach (var child in children)
+            {
+                descendants.AddRange(GetDescendantCategoryIds(all, child));
+            }
+            return descendants;
+        }
+
+        public async Task<SoftwareDetailResponse?> GetByIdAsync(string id)
+        {
+            var software = await _context.Softwares
+                .Include(s => s.Category)
+                .Include(s => s.Platform)
+                .Include(s => s.Screenshots)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (software == null) return null;
+
+            return new SoftwareDetailResponse
+            {
+                Id = software.Id,
+                Name = software.Name,
+                Summary = software.Summary,
+                Description = software.Description,
+                IconPath = software.IconPath,
+                OfficialUrl = software.OfficialUrl,
+                CategoryId = software.CategoryId,
+                CategoryName = software.Category?.Name,
+                Status = software.Status,
+                TotalDownloads = software.TotalDownloads,
+                CreatedAt = software.CreatedAt,
+                UpdatedAt = software.UpdatedAt,
+                Platform = software.Platform == null ? null : new PlatformResponse 
+                {
+                    Id = software.Platform.Id,
+                    Name = software.Platform.Name,
+                    IconClass = software.Platform.IconClass,
+                    ColorHex = software.Platform.ColorHex
+                },
+                Screenshots = software.Screenshots.OrderBy(x => x.SortOrder).Select(ss => new SoftwareScreenshotResponse
+                {
+                    Id = ss.Id,
+                    FilePath = ss.FilePath,
+                    SortOrder = ss.SortOrder
+                }).ToList()
+            };
+        }
+
+        public async Task<SoftwareDetailResponse> CreateAsync(SoftwareCreateRequest request)
+        {
+            var software = new Software
+            {
+                Name = request.Name,
+                Summary = request.Summary,
+                Description = request.Description,
+                OfficialUrl = request.OfficialUrl,
+                CategoryId = string.IsNullOrWhiteSpace(request.CategoryId) ? null : request.CategoryId,
+                PlatformId = request.PlatformId,
+                Status = SoftwareStatus.Draft, // 默认下架草稿
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            _context.Softwares.Add(software);
+            await _context.SaveChangesAsync();
+
+            return await GetByIdAsync(software.Id) ?? throw new Exception("创建软件失败。");
+        }
+
+        public async Task<SoftwareDetailResponse?> UpdateAsync(string id, SoftwareUpdateRequest request)
+        {
+            var software = await _context.Softwares.FirstOrDefaultAsync(s => s.Id == id);
+
+            if (software == null) return null;
+
+            software.Name = request.Name;
+            software.Summary = request.Summary;
+            software.Description = request.Description;
+            software.OfficialUrl = request.OfficialUrl;
+            software.CategoryId = string.IsNullOrWhiteSpace(request.CategoryId) ? null : request.CategoryId;
+            software.PlatformId = request.PlatformId;
+            software.UpdatedAt = DateTime.UtcNow;
+
+            _context.Softwares.Update(software);
+            await _context.SaveChangesAsync();
+
+            return await GetByIdAsync(software.Id);
+        }
+
+        public async Task<bool> DeleteAsync(string id)
+        {
+            var software = await _context.Softwares.FindAsync(id);
+            if (software == null) return false;
+
+            _context.Softwares.Remove(software);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> ChangeStatusAsync(string id, int status)
+        {
+            var software = await _context.Softwares.FindAsync(id);
+            if (software == null) return false;
+
+            software.Status = (SoftwareStatus)status;
+            software.UpdatedAt = DateTime.UtcNow;
+
+            _context.Softwares.Update(software);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+    }
+}

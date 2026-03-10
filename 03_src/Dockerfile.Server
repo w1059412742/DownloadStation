@@ -1,0 +1,26 @@
+# Build Stage
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy csproj and restore
+COPY ["DownloadStation.Server/DownloadStation.Server.csproj", "DownloadStation.Server/"]
+RUN dotnet restore "DownloadStation.Server/DownloadStation.Server.csproj"
+
+# Copy the rest of the code
+COPY . .
+WORKDIR "/src/DownloadStation.Server"
+RUN dotnet publish "DownloadStation.Server.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Runtime Stage
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app/publish .
+
+# Create volume mount points
+RUN mkdir -p /app/data && mkdir -p /data/software
+
+# Expose port
+EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["dotnet", "DownloadStation.Server.dll"]

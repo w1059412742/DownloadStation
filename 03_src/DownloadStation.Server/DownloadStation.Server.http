@@ -1,0 +1,6 @@
+@DownloadStation.Server_HostAddress = http://localhost:5186
+
+GET {{DownloadStation.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

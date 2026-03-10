@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile.Web
+    container_name: downloadstation-web
+    restart: always
+    ports:
+      - "8086:80"
+    depends_on:
+      - server
+
+  server:
+    build: 
+      context: .
+      dockerfile: Dockerfile.Server
+    container_name: downloadstation-server
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Data Source=/app/data/downloadstation.db
+      - AppSettings__JwtSecret=DOWNLOADSTATION_TOP_SECRET_REPLACE_ME_LATER
+      - AppSettings__StorageBasePath=/data/software
+      # Note: Configure this dynamically per environment if possible
+    ports:
+      - "5000:8080"
+    volumes:
+      # Database persistence
+      - ./data:/app/data
+      # 映射群晖宿主机的物理存放路径到容器内部的 /data/software 供后台解析
+      # (需要在 NAS 真实部署时将 ./software_repo 替换为您预期的物理路径, 如 /volume1/Software)
+      - ./software_repo:/data/software
