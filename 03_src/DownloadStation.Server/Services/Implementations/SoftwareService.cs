@@ -22,7 +22,7 @@ namespace DownloadStation.Server.Services.Implementations
         }
 
         public async Task<PagedResult<SoftwareListResponse>> GetPagedListAsync(
-            string? categoryId, string? platformId, string? keyword, 
+            string? categoryId, string? platformId, string? keyword,
             string? sortBy, bool includeDrafts, int page, int pageSize)
         {
             var query = _context.Softwares
@@ -135,7 +135,7 @@ namespace DownloadStation.Server.Services.Implementations
                 TotalDownloads = software.TotalDownloads,
                 CreatedAt = software.CreatedAt,
                 UpdatedAt = software.UpdatedAt,
-                Platform = software.Platform == null ? null : new PlatformResponse 
+                Platform = software.Platform == null ? null : new PlatformResponse
                 {
                     Id = software.Platform.Id,
                     Name = software.Platform.Name,
@@ -158,9 +158,10 @@ namespace DownloadStation.Server.Services.Implementations
                 Name = request.Name,
                 Summary = request.Summary,
                 Description = request.Description,
+                IconPath = request.IconPath,
                 OfficialUrl = request.OfficialUrl,
                 CategoryId = string.IsNullOrWhiteSpace(request.CategoryId) ? null : request.CategoryId,
-                PlatformId = request.PlatformId,
+                PlatformId = string.IsNullOrWhiteSpace(request.PlatformId) ? null : request.PlatformId,
                 Status = SoftwareStatus.Draft, // 默认下架草稿
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -181,9 +182,10 @@ namespace DownloadStation.Server.Services.Implementations
             software.Name = request.Name;
             software.Summary = request.Summary;
             software.Description = request.Description;
+            software.IconPath = request.IconPath;
             software.OfficialUrl = request.OfficialUrl;
             software.CategoryId = string.IsNullOrWhiteSpace(request.CategoryId) ? null : request.CategoryId;
-            software.PlatformId = request.PlatformId;
+            software.PlatformId = string.IsNullOrWhiteSpace(request.PlatformId) ? null : request.PlatformId;
             software.UpdatedAt = DateTime.UtcNow;
 
             _context.Softwares.Update(software);
@@ -194,10 +196,45 @@ namespace DownloadStation.Server.Services.Implementations
 
         public async Task<bool> DeleteAsync(string id)
         {
-            var software = await _context.Softwares.FindAsync(id);
+            var software = await _context.Softwares
+                .Include(s => s.Versions)
+                .Include(s => s.Screenshots)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
             if (software == null) return false;
 
+            // 删除物理文件 - 版本安装包及其可能的日志附件
+            foreach (var version in software.Versions)
+            {
+                if (!string.IsNullOrEmpty(version.FilePath) && System.IO.File.Exists(version.FilePath))
+                {
+                    try { System.IO.File.Delete(version.FilePath); } catch (Exception) { /* 忽略文件锁定错 */ }
+                }
+            }
+
+            // 删除物理文件 - 图文说明/截图
+            foreach (var ss in software.Screenshots)
+            {
+                if (!string.IsNullOrEmpty(ss.FilePath))
+                {
+                    // 假设直接存的是绝对路径或是可解析的相对路径，我们尽量结合环境变量。
+                    // 但通常数据库存的是 URL（比如 /uploads/images/...）这需要转换。
+                    // 为了简单起见，如果包含 /uploads 且没有实现完整虚拟路径映射：
+                    try
+                    {
+                        var localPath = ss.FilePath.StartsWith("/uploads")
+                            ? System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), ss.FilePath.TrimStart('/'))
+                            : ss.FilePath;
+                        if (System.IO.File.Exists(localPath)) System.IO.File.Delete(localPath);
+                    }
+                    catch (Exception) { }
+                }
+            }
+
+            _context.SoftwareVersions.RemoveRange(software.Versions);
+            _context.SoftwareScreenshots.RemoveRange(software.Screenshots);
             _context.Softwares.Remove(software);
+
             await _context.SaveChangesAsync();
             return true;
         }
@@ -213,6 +250,25 @@ namespace DownloadStation.Server.Services.Implementations
             _context.Softwares.Update(software);
             await _context.SaveChangesAsync();
             return true;
+        }
+        /// <summary>
+        /// 检查同平台下是否存在同名软件（排除指定 ID 的记录，用于编辑时排除自身）。
+        /// </summary>
+        /// <param name="name">软件名称。</param>
+        /// <param name="platformId">平台 ID。</param>
+        /// <param name="excludeId">需要排除的软件 ID。</param>
+        /// <returns>是否已存在。</returns>
+        public async Task<bool> CheckNameExistsAsync(string name, string platformId, string? excludeId)
+        {
+            var query = _context.Softwares
+                .Where(s => s.Name == name && s.PlatformId == platformId);
+
+            if (!string.IsNullOrWhiteSpace(excludeId))
+            {
+                query = query.Where(s => s.Id != excludeId);
+            }
+
+            return await query.AnyAsync();
         }
     }
 }

@@ -57,8 +57,8 @@
             <tr v-for="item in items" :key="item.id" class="hover:bg-black/5 transition-colors group">
               <td class="px-6 py-4">
                 <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center flex-shrink-0">
-                    <img v-if="item.iconPath" :src="item.iconPath" alt="" class="w-6 h-6 object-contain" />
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    <img v-if="item.iconPath" :src="`${apiUrl}${item.iconPath}`" alt="" class="w-full h-full object-cover" />
                     <Package v-else class="w-5 h-5 text-primary" />
                   </div>
                   <div>
@@ -113,7 +113,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { Box, Plus, Search, Loader2, Package, Edit2, Power, Trash2 } from 'lucide-vue-next'
-import axios from 'axios'
+import http from '../../api/http'
+
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5186'
 
 const items = ref<any[]>([])
 const loading = ref(false)
@@ -124,13 +126,10 @@ const filters = ref({
   keyword: ''
 })
 
-const getToken = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` } })
-
 const fetchData = async () => {
   loading.value = true
   try {
-    const res = await axios.get('http://localhost:5000/api/admin/softwares', {
-      ...getToken(),
+    const res = await http.get('/api/admin/softwares', {
       params: filters.value
     })
     if (res.data.code === 200) {
@@ -147,12 +146,7 @@ const fetchData = async () => {
 const toggleStatus = async (item: any) => {
   const newStatus = item.status === 1 ? 0 : 1
   try {
-    const res = await axios.patch(`http://localhost:5000/api/admin/softwares/${item.id}/status`, newStatus, {
-      headers: { 
-        Authorization: `Bearer ${localStorage.getItem('admin_token')}`,
-        'Content-Type': 'application/json'
-      }
-    })
+    const res = await http.patch(`/api/admin/softwares/${item.id}/status`, newStatus)
     if (res.data.code === 200) {
       item.status = newStatus
     }
@@ -164,7 +158,7 @@ const toggleStatus = async (item: any) => {
 const deleteSoftware = async (id: string) => {
   if (!confirm('确定删除该软件及其所有版本？')) return
   try {
-    const res = await axios.delete(`http://localhost:5000/api/admin/softwares/${id}`, getToken())
+    const res = await http.delete(`/api/admin/softwares/${id}`)
     if (res.data.code === 200) fetchData()
   } catch (error: any) {
     alert(error.response?.data?.message || '删除失败')

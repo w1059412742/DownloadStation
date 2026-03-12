@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { Box, Download, Layers, Monitor } from 'lucide-vue-next'
-import axios from 'axios'
+import http from '../../api/http'
 
 const metrics = ref([
   { label: '软件总数', value: 0, icon: Box },
@@ -33,9 +33,7 @@ const metrics = ref([
 
 onMounted(async () => {
   try {
-    const res = await axios.get('http://localhost:5000/api/admin/dashboard/statistics', {
-      headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` }
-    })
+    const res = await http.get('/api/admin/dashboard/statistics')
     if (res.data.code === 200) {
       metrics.value[0]!.value = res.data.data.softwareCount
       metrics.value[1]!.value = res.data.data.totalDownloads

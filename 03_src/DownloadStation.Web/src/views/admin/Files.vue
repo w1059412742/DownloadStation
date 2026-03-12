@@ -63,17 +63,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { FolderSearch, Radar, CheckCircle, FileArchive } from 'lucide-vue-next'
-import axios from 'axios'
+import http from '../../api/http'
 
 const files = ref<any[]>([])
 const loading = ref(false)
 
-const getToken = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` } })
-
 const scanFiles = async () => {
   loading.value = true
   try {
-    const res = await axios.get('http://localhost:5000/api/admin/files/scan', getToken())
+    const res = await http.get('/api/admin/files/scan')
     if (res.data.code === 200) {
       files.value = res.data.data
     }

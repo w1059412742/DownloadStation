@@ -28,33 +28,9 @@
     <!-- Software Section -->
     <section class="max-w-7xl mx-auto px-6 pb-12">
       
-      <!-- Filters (Category & Platform combined for simplicity) -->
+      <!-- Filters (Platform & Category combined for simplicity) -->
       <div class="space-y-4 mb-8">
-        <!-- Category Filter -->
-        <div class="flex items-center justify-center gap-2 flex-wrap">
-          <button
-            @click="setCategory('')"
-            :class="[
-              'inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
-              filters.categoryId === '' ? 'bg-foreground text-card shadow-sm' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-            ]"
-          >
-            <span>全部</span>
-          </button>
-          <button
-            v-for="cat in categories"
-            :key="cat.id"
-            @click="setCategory(cat.id)"
-            :class="[
-              'inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
-              filters.categoryId === cat.id ? 'bg-foreground text-card shadow-sm' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-            ]"
-          >
-            <span>{{ cat.name }}</span>
-          </button>
-        </div>
-
-        <!-- Platform Filter -->
+        <!-- Platform Filter（平台筛选在上方） -->
         <div class="flex items-center justify-center gap-2 flex-wrap">
           <button
             @click="setPlatform('')"
@@ -75,6 +51,30 @@
             ]"
           >
             {{ p.name }}
+          </button>
+        </div>
+
+        <!-- Category Filter（分类筛选在下方） -->
+        <div class="flex items-center justify-center gap-2 flex-wrap">
+          <button
+            @click="setCategory('')"
+            :class="[
+              'inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
+              filters.categoryId === '' ? 'bg-foreground text-card shadow-sm' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+            ]"
+          >
+            <span>全部</span>
+          </button>
+          <button
+            v-for="cat in categories"
+            :key="cat.id"
+            @click="setCategory(cat.id)"
+            :class="[
+              'inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
+              filters.categoryId === cat.id ? 'bg-foreground text-card shadow-sm' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+            ]"
+          >
+            <span>{{ cat.name }}</span>
           </button>
         </div>
       </div>
@@ -150,7 +150,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { Search, Loader2, Package, Download, SearchX, Monitor, Apple, Laptop } from 'lucide-vue-next'
-import axios from 'axios'
+import http from '../../api/http'
 
 const softwares = ref<any[]>([])
 const categories = ref<any[]>([])
@@ -169,7 +169,7 @@ const platforms = ref<any[]>([])
 
 const fetchCategories = async () => {
   try {
-    const res = await axios.get('http://localhost:5000/api/categories/tree')
+    const res = await http.get('/api/categories/tree')
     if (res.data.code === 200) {
       categories.value = res.data.data
     }
@@ -178,7 +178,7 @@ const fetchCategories = async () => {
 
 const fetchPlatforms = async () => {
   try {
-    const res = await axios.get('http://localhost:5000/api/platforms')
+    const res = await http.get('/api/platforms')
     if (res.data.code === 200) {
       platforms.value = res.data.data
     }
@@ -193,7 +193,7 @@ const fetchSoftwares = async (append = false) => {
   }
   
   try {
-    const res = await axios.get('http://localhost:5000/api/softwares', { params: filters.value })
+    const res = await http.get('/api/softwares', { params: filters.value })
     if (res.data.code === 200) {
       const { items, totalCount } = res.data.data
       if (append) softwares.value.push(...items)

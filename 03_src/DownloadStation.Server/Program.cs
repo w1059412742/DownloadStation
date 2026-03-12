@@ -17,7 +17,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // 2. 注入数据库上下文 SQLite
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? "Data Source=downloadstation.db";
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -93,6 +93,19 @@ if (app.Environment.IsDevelopment())
 
 app.UseSerilogRequestLogging();
 app.UseCors("AllowVueClient");
+
+var uploadBasePath = builder.Configuration.GetValue<string>("AppSettings:UploadBasePath") ?? "./uploads";
+if (!System.IO.Directory.Exists(uploadBasePath))
+{
+    System.IO.Directory.CreateDirectory(uploadBasePath);
+}
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        System.IO.Path.Combine(builder.Environment.ContentRootPath, uploadBasePath)),
+    RequestPath = "/uploads"
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

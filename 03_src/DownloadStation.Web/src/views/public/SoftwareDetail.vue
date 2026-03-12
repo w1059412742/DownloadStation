@@ -103,7 +103,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ArrowLeft, Loader2, Package, Download, ExternalLink, Layers, Terminal, ShieldCheck } from 'lucide-vue-next'
-import axios from 'axios'
+import http from '../../api/http'
 
 const route = useRoute()
 const software = ref<any>(null)
@@ -112,10 +112,10 @@ const loading = ref(true)
 
 const fetchData = async () => {
   try {
-    const detailRes = await axios.get(`http://localhost:5000/api/softwares/${route.params.id}`)
+    const detailRes = await http.get(`/api/softwares/${route.params.id}`)
     if (detailRes.data.code === 200) software.value = detailRes.data.data
 
-    const versionRes = await axios.get(`http://localhost:5000/api/softwares/${route.params.id}/versions`)
+    const versionRes = await http.get(`/api/softwares/${route.params.id}/versions`)
     if (versionRes.data.code === 200) versions.value = versionRes.data.data
   } catch (err) {
     console.error('Failed to load detail', err)
@@ -134,7 +134,7 @@ const scrollToVersions = () => {
 
 const triggerDownload = (ver: any) => {
   // 直接利用浏览器的 a 标签下载以获取下载流，并在成功调用接口时更新本体次数。此处简化。
-  const url = `http://localhost:5000/api/softwares/${software.value.id}/versions/${ver.id}/download`
+  const url = `${http.defaults.baseURL}/api/softwares/${software.value.id}/versions/${ver.id}/download`
   window.open(url, '_blank')
   
   // 假装界面上直接 +1 感官更好

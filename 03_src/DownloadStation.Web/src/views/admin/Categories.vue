@@ -117,20 +117,17 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { Layers, Plus, Monitor, Folder, Edit2, Trash, FolderTree, Loader2, MonitorOff } from 'lucide-vue-next'
-import axios from 'axios'
+import http from '../../api/http'
 
 const categories = ref<any[]>([])
 const platforms = ref<any[]>([])
 const loadingCategories = ref(true)
 const loadingPlatforms = ref(true)
 
-const token = localStorage.getItem('admin_token')
-const axConfig = { headers: { Authorization: `Bearer ${token}` } }
-
 const fetchCategories = async () => {
   try {
     loadingCategories.value = true
-    const res = await axios.get('http://localhost:5000/api/admin/categories', axConfig)
+    const res = await http.get('/api/admin/categories')
     if (res.data.code === 200) categories.value = res.data.data
   } finally {
     loadingCategories.value = false
@@ -140,7 +137,7 @@ const fetchCategories = async () => {
 const fetchPlatforms = async () => {
   try {
     loadingPlatforms.value = true
-    const res = await axios.get('http://localhost:5000/api/admin/platforms', axConfig)
+    const res = await http.get('/api/admin/platforms')
     if (res.data.code === 200) platforms.value = res.data.data
   } finally {
     loadingPlatforms.value = false
@@ -162,7 +159,7 @@ const openPlatformModal = (_platform: any = null) => {
 const deleteCategory = async (id: string) => {
   if (!confirm('确定删除该分类？')) return
   try {
-    const res = await axios.delete(`http://localhost:5000/api/admin/categories/${id}`, axConfig)
+    const res = await http.delete(`/api/admin/categories/${id}`)
     if (res.data.code === 200) fetchCategories()
     else alert(res.data.message)
   } catch (e: any) { alert(e.response?.data?.message || '操作失败') }
@@ -171,7 +168,7 @@ const deleteCategory = async (id: string) => {
 const deletePlatform = async (id: string) => {
   if (!confirm('确定删除该平台？')) return
   try {
-    const res = await axios.delete(`http://localhost:5000/api/admin/platforms/${id}`, axConfig)
+    const res = await http.delete(`/api/admin/platforms/${id}`)
     if (res.data.code === 200) fetchPlatforms()
     else alert(res.data.message)
   } catch (e: any) { alert(e.response?.data?.message || '操作失败') }
