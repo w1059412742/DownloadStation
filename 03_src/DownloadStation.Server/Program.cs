@@ -67,6 +67,8 @@ builder.Services.AddScoped<ISoftwareService, SoftwareService>();
 builder.Services.AddScoped<IVersionService, VersionService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<ITagService, TagService>();
+
 
 // 托管进程级别服务的注册：异步提取计算防篡改
 builder.Services.AddHostedService<DownloadStation.Server.BackgroundServices.HashComputeService>();

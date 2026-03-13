@@ -42,6 +42,7 @@
           <thead>
             <tr class="bg-black/5 text-xs text-textSecondary uppercase tracking-wider">
               <th class="px-6 py-4 font-semibold">软件信息</th>
+              <th class="px-6 py-4 font-semibold">关联标签</th>
               <th class="px-6 py-4 font-semibold">所属分类</th>
               <th class="px-6 py-4 font-semibold">展示状态</th>
               <th class="px-6 py-4 font-semibold">下载次数</th>
@@ -56,15 +57,27 @@
             </tr>
             <tr v-for="item in items" :key="item.id" class="hover:bg-black/5 transition-colors group">
               <td class="px-6 py-4">
-                <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    <img v-if="item.iconPath" :src="`${apiUrl}${item.iconPath}`" alt="" class="w-full h-full object-cover" />
-                    <Package v-else class="w-5 h-5 text-primary" />
-                  </div>
+                <div @click="$router.push(`/admin/softwares/${item.id}`)" class="flex items-center space-x-3 cursor-pointer group/info">
+                  <SoftwareIcon 
+                    :iconPath="item.iconPath" 
+                    :platformName="item.platform?.name" 
+                    size="md" 
+                  />
                   <div>
-                    <h3 class="text-sm font-bold text-textPrimary">{{ item.name }}</h3>
+                    <h3 class="text-sm font-bold text-textPrimary group-hover/info:text-primary transition-colors">{{ item.name }}</h3>
                     <p class="text-xs text-textHint mt-0.5 line-clamp-1 w-48">{{ item.summary || '无简述内容...' }}</p>
                   </div>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex flex-wrap gap-1.5 max-w-[160px]">
+                  <span v-for="tag in item.tags" :key="tag.id" 
+                        class="inline-flex items-center px-2 py-0.5 rounded text-[10px] bg-black/5 text-textSecondary border border-border"
+                        :title="tag.name">
+                    <span class="w-1.5 h-1.5 rounded-full mr-1" :style="{ backgroundColor: tag.colorHex || '#94a3b8' }"></span>
+                    {{ tag.name }}
+                  </span>
+                  <span v-if="!item.tags || item.tags.length === 0" class="text-[10px] text-textHint">无</span>
                 </div>
               </td>
               <td class="px-6 py-4 text-sm text-textSecondary">
@@ -86,7 +99,8 @@
                     <Edit2 class="w-4 h-4" />
                   </button>
                   <button @click="toggleStatus(item)" class="p-1.5 bg-surface border border-border text-textSecondary hover:text-primary hover:border-primary/50 rounded-lg transition-colors" :title="item.status === 1 ? '下架' : '发布'">
-                    <Power class="w-4 h-4" />
+                    <EyeOff v-if="item.status === 1" class="w-4 h-4" />
+                    <Eye v-else class="w-4 h-4" />
                   </button>
                   <button @click="deleteSoftware(item.id)" class="p-1.5 bg-surface border border-border text-textSecondary hover:text-danger hover:border-danger/50 rounded-lg transition-colors" title="删除">
                     <Trash2 class="w-4 h-4" />
@@ -112,8 +126,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { Box, Plus, Search, Loader2, Package, Edit2, Power, Trash2 } from 'lucide-vue-next'
+import { Box, Plus, Search, Loader2, Package, Edit2, Eye, EyeOff, Trash2 } from 'lucide-vue-next'
 import http from '../../api/http'
+import SoftwareIcon from '../../components/common/SoftwareIcon.vue'
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5186'
 
@@ -146,7 +161,7 @@ const fetchData = async () => {
 const toggleStatus = async (item: any) => {
   const newStatus = item.status === 1 ? 0 : 1
   try {
-    const res = await http.patch(`/api/admin/softwares/${item.id}/status`, newStatus)
+    const res = await http.patch(`/api/admin/softwares/${item.id}/status`, { status: newStatus })
     if (res.data.code === 200) {
       item.status = newStatus
     }

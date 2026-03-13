@@ -47,6 +47,13 @@ const routes: Array<RouteRecordRaw> = [
         meta: { title: '分类与平台' }
       },
       {
+        path: 'tags',
+        name: 'AdminTags',
+        component: () => import('../views/admin/Tags.vue'),
+        meta: { title: '标签管理' }
+      },
+
+      {
         path: 'softwares',
         name: 'AdminSoftwares',
         component: () => import('../views/admin/Softwares.vue'),

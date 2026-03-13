@@ -87,7 +87,12 @@ namespace DownloadStation.Server.Models
         public ICollection<SoftwareScreenshot> Screenshots { get; set; } = new List<SoftwareScreenshot>();
 
         /// <summary>
-        /// 管理各个可用下载版的合集资源。
+        /// 关联的标签合集（多对多）。
+        /// </summary>
+        public ICollection<Tag> Tags { get; set; } = new List<Tag>();
+
+        /// <summary>
+        /// 其他版本信息。
         /// </summary>
         public ICollection<SoftwareVersion> Versions { get; set; } = new List<SoftwareVersion>();
     }

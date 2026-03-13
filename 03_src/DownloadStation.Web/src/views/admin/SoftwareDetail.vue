@@ -40,20 +40,17 @@
           <div class="flex items-center space-x-6">
              <div class="relative group cursor-pointer w-20 h-20 shrink-0">
                 <input type="file" class="hidden" accept="image/*" id="iconUpload" @change="onIconChange" />
-                <label for="iconUpload" class="w-full h-full rounded-2xl overflow-hidden shadow-soft border-2 border-dashed border-border flex items-center justify-center bg-black/5 hover:border-primary transition-all cursor-pointer">
-                   <img v-if="form.iconPath" :src="`${apiUrl}${form.iconPath}`" class="w-full h-full object-cover" />
-                   <div v-else-if="form.platformId" class="w-full h-full flex items-center justify-center text-white text-3xl font-bold" :style="{ backgroundColor: defaultIconColor }">
-                      {{ defaultIcon }}
-                   </div>
-                   <div v-else class="w-full h-full flex items-center justify-center text-textHint flex-col">
-                      <Image class="w-6 h-6 mb-1" />
-                      <span class="text-[10px]">上传图标</span>
-                   </div>
+                <label for="iconUpload" class="w-full h-full cursor-pointer">
+                   <SoftwareIcon 
+                     :iconPath="form.iconPath" 
+                     :platformName="currentPlatformName" 
+                     size="xl" 
+                   />
                    
-                   <div v-if="isUploadingIcon" class="absolute inset-0 bg-black/50 flex items-center justify-center backdrop-blur-sm">
-                      <Loader2 class="w-5 h-5 text-white animate-spin" />
+                   <div v-if="isUploadingIcon" class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-2xl backdrop-blur-sm">
+                      <Loader2 class="w-8 h-8 text-white animate-spin" />
                    </div>
-                   <div v-else class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm text-white text-xs font-medium content-center text-center">更换</div>
+                   <div v-else class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl backdrop-blur-sm text-white text-sm font-medium">更换</div>
                 </label>
              </div>
              
@@ -143,6 +140,32 @@
             </div>
             <p v-if="!form.platformId" class="text-[10px] text-danger mt-2 italic">* 请选择软件所属平台</p>
           </div>
+
+          <div class="pt-2">
+            <label class="block text-sm font-medium text-textSecondary mb-2 flex items-center">
+              <TagIcon class="w-4 h-4 mr-2 text-primary" /> 软件标签
+            </label>
+            <div class="flex flex-wrap gap-2">
+              <button 
+                v-for="tag in allTags" 
+                :key="tag.id"
+                type="button"
+                @click="toggleTag(tag.id)"
+                :class="[
+                  'px-3 py-1.5 rounded-xl text-xs font-medium transition-all border flex items-center space-x-1.5',
+                  form.tagIds.includes(tag.id) 
+                    ? 'bg-primary/10 border-primary text-primary shadow-sm' 
+                    : 'bg-black/5 border-transparent text-textSecondary hover:bg-black/10'
+                ]"
+              >
+                <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: tag.colorHex || '#94a3b8' }"></span>
+                <span>{{ tag.name }}</span>
+              </button>
+            </div>
+            <p v-if="allTags.length === 0" class="text-[10px] text-textHint italic">
+              暂无可用标签，请前往「标签管理」创建。
+            </p>
+          </div>
         </div>
 
         <!-- Upload Package Card -->
@@ -214,8 +237,9 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ArrowLeft, Save, Loader2, Terminal, ShieldCheck, Clock, Trash, UploadCloud, Paperclip, Eye, EyeOff, Edit2, Image } from 'lucide-vue-next'
+import { ArrowLeft, Save, Loader2, Terminal, ShieldCheck, Clock, Trash, UploadCloud, Paperclip, Eye, EyeOff, Edit2, Image, Tag as TagIcon } from 'lucide-vue-next'
 import http from '../../api/http'
+import SoftwareIcon from '../../components/common/SoftwareIcon.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -233,7 +257,8 @@ const form = ref({
   iconPath: '',
   officialUrl: '',
   categoryId: '',
-  platformId: ''
+  platformId: '',
+  tagIds: [] as string[]
 })
 
 const uploadForm = reactive({
@@ -246,16 +271,9 @@ const uploadProgress = ref(0)
 const isPastingImage = ref(false)
 const isUploadingIcon = ref(false)
 
-const defaultIcon = computed(() => {
-   if (form.value.iconPath) return ''
+const currentPlatformName = computed(() => {
    const p = platforms.value.find(x => x.id === form.value.platformId)
-   if (!p) return ''
-   return p.name.substring(0, 1).toUpperCase()
-})
-
-const defaultIconColor = computed(() => {
-   const p = platforms.value.find(x => x.id === form.value.platformId)
-   return p?.colorHex || '#9CA3AF'
+   return p?.name || null
 })
 
 const onIconChange = async (e: any) => {
@@ -278,18 +296,21 @@ const onIconChange = async (e: any) => {
 
 const categories = ref<any[]>([])
 const platforms = ref<any[]>([])
+const allTags = ref<any[]>([])
 const versions = ref<any[]>([])
 
 const fetchData = async () => {
   loading.value = true
   try {
     // 拉取字典数据
-    const [catRes, platRes] = await Promise.all([
+    const [catRes, platRes, tagRes] = await Promise.all([
       http.get('/api/admin/categories'),
-      http.get('/api/admin/platforms')
+      http.get('/api/admin/platforms'),
+      http.get('/api/admin/tags')
     ])
     if (catRes.data.code === 200) categories.value = catRes.data.data
     if (platRes.data.code === 200) platforms.value = platRes.data.data
+    if (tagRes.data.code === 200) allTags.value = tagRes.data.data
 
     if (!isNew.value) {
       // 拉取详情
@@ -303,7 +324,8 @@ const fetchData = async () => {
           iconPath: d.iconPath || '',
           officialUrl: d.officialUrl || '',
           categoryId: d.categoryId || '',
-          platformId: d.platform?.id || ''
+          platformId: d.platform?.id || '',
+          tagIds: d.tags ? d.tags.map((t: any) => t.id) : []
         }
       }
 
@@ -323,6 +345,15 @@ const loadVersions = async () => {
    if (verRes.data.code === 200) {
       versions.value = verRes.data.data
    }
+}
+
+const toggleTag = (tagId: string) => {
+  const index = form.value.tagIds.indexOf(tagId)
+  if (index === -1) {
+    form.value.tagIds.push(tagId)
+  } else {
+    form.value.tagIds.splice(index, 1)
+  }
 }
 
 onMounted(() => {

@@ -99,10 +99,11 @@
         >
           <!-- Header -->
           <div class="flex items-start gap-4 mb-4">
-            <div class="w-14 h-14 rounded-xl overflow-hidden bg-secondary flex-shrink-0 shadow-sm flex items-center justify-center">
-              <img v-if="sw.iconPath" :src="sw.iconPath" alt="icon" class="w-full h-full object-cover" loading="lazy" />
-              <Package v-else class="w-6 h-6 text-primary" />
-            </div>
+            <SoftwareIcon 
+              :iconPath="sw.iconPath" 
+              :platformName="sw.platform?.name" 
+              size="lg" 
+            />
             <div class="flex-1 min-w-0">
               <h3 class="font-semibold text-foreground truncate group-hover:text-primary transition-colors">
                 {{ sw.name }}
@@ -151,11 +152,14 @@
 import { ref, onMounted } from 'vue'
 import { Search, Loader2, Package, Download, SearchX, Monitor, Apple, Laptop } from 'lucide-vue-next'
 import http from '../../api/http'
+import SoftwareIcon from '../../components/common/SoftwareIcon.vue'
 
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5186'
 const softwares = ref<any[]>([])
 const categories = ref<any[]>([])
 const loading = ref(false)
 const hasMore = ref(false)
+const totalCount = ref(0)
 
 const filters = ref({
   page: 1,
@@ -195,11 +199,12 @@ const fetchSoftwares = async (append = false) => {
   try {
     const res = await http.get('/api/softwares', { params: filters.value })
     if (res.data.code === 200) {
-      const { items, totalCount } = res.data.data
+      const { items, totalCount: count } = res.data.data
       if (append) softwares.value.push(...items)
       else softwares.value = items
       
-      hasMore.value = softwares.value.length < totalCount
+      totalCount.value = count
+      hasMore.value = softwares.value.length < count
     }
   } catch (e) {
     console.error('Failed to load softwares')

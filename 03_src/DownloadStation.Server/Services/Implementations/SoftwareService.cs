@@ -28,6 +28,7 @@ namespace DownloadStation.Server.Services.Implementations
             var query = _context.Softwares
                 .Include(s => s.Category)
                 .Include(s => s.Platform)
+                .Include(s => s.Tags)
                 .AsQueryable();
 
             if (!includeDrafts)
@@ -35,12 +36,15 @@ namespace DownloadStation.Server.Services.Implementations
                 query = query.Where(s => s.Status == SoftwareStatus.Published);
             }
 
+            categoryId = string.IsNullOrWhiteSpace(categoryId) ? null : categoryId;
+            platformId = string.IsNullOrWhiteSpace(platformId) ? null : platformId;
+
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 query = query.Where(s => s.Name.Contains(keyword) || (s.Summary != null && s.Summary.Contains(keyword)));
             }
 
-            if (!string.IsNullOrWhiteSpace(categoryId))
+            if (categoryId != null)
             {
                 // 递归查找子分类，为了演示起见这里简单使用基于内存或者假设只有一级
                 // 严谨做法需要独立提取其所有后代项。这里简化处理为包含本类
@@ -53,7 +57,7 @@ namespace DownloadStation.Server.Services.Implementations
                 query = query.Where(s => s.CategoryId != null && targetCategories.Contains(s.CategoryId));
             }
 
-            if (!string.IsNullOrWhiteSpace(platformId))
+            if (platformId != null)
             {
                 query = query.Where(s => s.PlatformId == platformId);
             }
@@ -69,7 +73,9 @@ namespace DownloadStation.Server.Services.Implementations
                 query = query.OrderByDescending(s => s.UpdatedAt).ThenByDescending(s => s.CreatedAt);
             }
 
+            Console.WriteLine($"[GetPagedListAsync] categoryId: {categoryId}, platformId: {platformId}, includeDrafts: {includeDrafts}");
             var totalCount = await query.CountAsync();
+            Console.WriteLine($"[GetPagedListAsync] TotalCount found: {totalCount}");
             var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
             var mappedItems = items.Select(s => new SoftwareListResponse
@@ -88,7 +94,13 @@ namespace DownloadStation.Server.Services.Implementations
                     Name = s.Platform.Name,
                     IconClass = s.Platform.IconClass,
                     ColorHex = s.Platform.ColorHex
-                }
+                },
+                Tags = s.Tags.Select(t => new TagResponse
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    ColorHex = t.ColorHex
+                }).ToList()
             });
 
             return new PagedResult<SoftwareListResponse>
@@ -117,6 +129,7 @@ namespace DownloadStation.Server.Services.Implementations
                 .Include(s => s.Category)
                 .Include(s => s.Platform)
                 .Include(s => s.Screenshots)
+                .Include(s => s.Tags)
                 .FirstOrDefaultAsync(s => s.Id == id);
 
             if (software == null) return null;
@@ -147,6 +160,14 @@ namespace DownloadStation.Server.Services.Implementations
                     Id = ss.Id,
                     FilePath = ss.FilePath,
                     SortOrder = ss.SortOrder
+                }).ToList(),
+                Tags = software.Tags.Select(t => new TagResponse
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    ColorHex = t.ColorHex,
+                    CreatedAt = t.CreatedAt,
+                    UpdatedAt = t.UpdatedAt
                 }).ToList()
             };
         }
@@ -168,6 +189,17 @@ namespace DownloadStation.Server.Services.Implementations
             };
 
             _context.Softwares.Add(software);
+            
+            // 处理标签关联
+            if (request.TagIds != null && request.TagIds.Any())
+            {
+                var tags = await _context.Tags.Where(t => request.TagIds.Contains(t.Id)).ToListAsync();
+                foreach (var tag in tags)
+                {
+                    software.Tags.Add(tag);
+                }
+            }
+
             await _context.SaveChangesAsync();
 
             return await GetByIdAsync(software.Id) ?? throw new Exception("创建软件失败。");
@@ -189,7 +221,21 @@ namespace DownloadStation.Server.Services.Implementations
             software.UpdatedAt = DateTime.UtcNow;
 
             _context.Softwares.Update(software);
+
+            // 处理标签增量更新 (先加载现有，再清理，最后重新绑定新标签)
+            await _context.Entry(software).Collection(s => s.Tags).LoadAsync();
+            software.Tags.Clear();
+            if (request.TagIds != null && request.TagIds.Any())
+            {
+                var tags = await _context.Tags.Where(t => request.TagIds.Contains(t.Id)).ToListAsync();
+                foreach (var tag in tags)
+                {
+                    software.Tags.Add(tag);
+                }
+            }
+
             await _context.SaveChangesAsync();
+
 
             return await GetByIdAsync(software.Id);
         }

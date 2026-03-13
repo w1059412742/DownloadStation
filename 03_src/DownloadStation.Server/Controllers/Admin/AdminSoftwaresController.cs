@@ -66,10 +66,15 @@ namespace DownloadStation.Server.Controllers.Admin
             return Ok(Dtos.Responses.ApiResponse<object?>.Success(null, "软件删除成功。"));
         }
 
+        /// <summary>
+        /// 切换软件的发布/下架状态。
+        /// </summary>
+        /// <param name="id">目标软件 ID。</param>
+        /// <param name="request">包含目标状态值的请求体。</param>
         [HttpPatch("{id}/status")]
-        public async Task<IActionResult> ChangeStatus(string id, [FromBody] int status)
+        public async Task<IActionResult> ChangeStatus(string id, [FromBody] ChangeStatusRequest request)
         {
-            var success = await _softwareService.ChangeStatusAsync(id, status);
+            var success = await _softwareService.ChangeStatusAsync(id, request.Status);
             if (!success)
                 return NotFound(Dtos.Responses.ApiResponse<object>.Fail(404, "目标软件不存在。"));
 

@@ -109,14 +109,92 @@
 
     </div>
 
-    <!-- Modals would go here (Simplified for initial commit) -->
+    <!-- Category Modal -->
+    <div v-if="showCategoryModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showCategoryModal = false"></div>
+      <div class="relative bg-surface w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-fade-in-up">
+        <div class="px-6 py-4 border-b border-border flex justify-between items-center bg-black/5">
+          <h3 class="font-bold text-textPrimary">{{ isEditingCategory ? '编辑分类' : '新增分类' }}</h3>
+          <button @click="showCategoryModal = false" class="text-textHint hover:text-textPrimary transition-colors">
+            <X class="w-5 h-5" />
+          </button>
+        </div>
+        <form @submit.prevent="saveCategory" class="p-6 space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-textSecondary uppercase mb-1.5">分类名称</label>
+            <input v-model="categoryForm.name" type="text" required placeholder="例如：开发工具" class="w-full px-4 py-2 bg-black/5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-textPrimary" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-textSecondary uppercase mb-1.5">上级分类</label>
+            <select v-model="categoryForm.parentId" class="w-full px-4 py-2 bg-black/5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-textPrimary">
+              <option value="">无（顶级分类）</option>
+              <option v-for="cat in flatCategories" :key="cat.id" :value="cat.id" :disabled="cat.id === categoryForm.id">
+                {{ cat.name }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-textSecondary uppercase mb-1.5">显示排序</label>
+            <input v-model.number="categoryForm.sortOrder" type="number" class="w-full px-4 py-2 bg-black/5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-textPrimary" />
+          </div>
+          <div class="pt-2 flex space-x-3">
+            <button type="button" @click="showCategoryModal = false" class="flex-1 px-4 py-2 bg-black/5 text-textPrimary rounded-xl font-medium hover:bg-black/10 transition-colors">取消</button>
+            <button type="submit" :disabled="saving" class="flex-1 px-4 py-2 bg-primary text-white rounded-xl font-medium hover:bg-primaryHover transition-colors disabled:opacity-50">
+              {{ saving ? '保存中...' : '确定' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Platform Modal -->
+    <div v-if="showPlatformModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showPlatformModal = false"></div>
+      <div class="relative bg-surface w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-fade-in-up">
+        <div class="px-6 py-4 border-b border-border flex justify-between items-center bg-black/5">
+          <h3 class="font-bold text-textPrimary">{{ isEditingPlatform ? '编辑平台' : '新增平台' }}</h3>
+          <button @click="showPlatformModal = false" class="text-textHint hover:text-textPrimary transition-colors">
+            <X class="w-5 h-5" />
+          </button>
+        </div>
+        <form @submit.prevent="savePlatform" class="p-6 space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-textSecondary uppercase mb-1.5">平台名称</label>
+            <input v-model="platformForm.name" type="text" required placeholder="例如：Windows" class="w-full px-4 py-2 bg-black/5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-textPrimary" />
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-textSecondary uppercase mb-1.5">图标名称</label>
+              <input v-model="platformForm.iconClass" type="text" placeholder="例如：Monitor" class="w-full px-4 py-2 bg-black/5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-textPrimary" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-textSecondary uppercase mb-1.5">主题色 (Hex)</label>
+              <div class="flex space-x-2">
+                <input v-model="platformForm.colorHex" type="color" class="w-10 h-10 rounded-lg overflow-hidden p-0 border-0 bg-transparent cursor-pointer" />
+                <input v-model="platformForm.colorHex" type="text" placeholder="#0078D6" class="flex-1 px-4 py-2 bg-black/5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-textPrimary text-xs font-mono" />
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-textSecondary uppercase mb-1.5">显示排序</label>
+            <input v-model.number="platformForm.sortOrder" type="number" class="w-full px-4 py-2 bg-black/5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-textPrimary" />
+          </div>
+          <div class="pt-2 flex space-x-3">
+            <button type="button" @click="showPlatformModal = false" class="flex-1 px-4 py-2 bg-black/5 text-textPrimary rounded-xl font-medium hover:bg-black/10 transition-colors">取消</button>
+            <button type="submit" :disabled="saving" class="flex-1 px-4 py-2 bg-primary text-white rounded-xl font-medium hover:bg-primaryHover transition-colors disabled:opacity-50">
+              {{ saving ? '保存中...' : '确定' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
     
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { Layers, Plus, Monitor, Folder, Edit2, Trash, FolderTree, Loader2, MonitorOff } from 'lucide-vue-next'
+import { ref, onMounted, computed } from 'vue'
+import { Layers, Plus, Monitor, Folder, Edit2, Trash, FolderTree, Loader2, MonitorOff, X } from 'lucide-vue-next'
 import http from '../../api/http'
 
 const categories = ref<any[]>([])
@@ -144,16 +222,121 @@ const fetchPlatforms = async () => {
   }
 }
 
+const flatCategories = computed(() => {
+  const result: any[] = []
+  const traverse = (nodes: any[]) => {
+    nodes.forEach(node => {
+      result.push({ id: node.id, name: node.name })
+      if (node.children && node.children.length > 0) {
+        traverse(node.children)
+      }
+    })
+  }
+  traverse(categories.value)
+  return result
+})
+
 onMounted(() => {
   fetchCategories()
   fetchPlatforms()
 })
 
-const openCategoryModal = (_category: any = null) => {
-  alert('此处需要弹窗编辑分类资料，为保持演示原子性暂不展开')
+const saving = ref(false)
+
+// Category Modal Logic
+const showCategoryModal = ref(false)
+const isEditingCategory = ref(false)
+const categoryForm = ref({
+  id: '',
+  name: '',
+  parentId: '',
+  sortOrder: 0
+})
+
+const openCategoryModal = (category: any = null) => {
+  if (category) {
+    isEditingCategory.value = true
+    categoryForm.value = { 
+      id: category.id, 
+      name: category.name, 
+      parentId: category.parentId || '', 
+      sortOrder: category.sortOrder || 0 
+    }
+  } else {
+    isEditingCategory.value = false
+    categoryForm.value = { id: '', name: '', parentId: '', sortOrder: 0 }
+  }
+  showCategoryModal.value = true
 }
-const openPlatformModal = (_platform: any = null) => {
-  alert('此处需要弹窗编辑平台资料，为保持演示原子性暂不展开')
+
+const saveCategory = async () => {
+  try {
+    saving.value = true
+    const url = '/api/admin/categories'
+    const res = isEditingCategory.value 
+      ? await http.put(`${url}/${categoryForm.value.id}`, categoryForm.value)
+      : await http.post(url, categoryForm.value)
+    
+    if (res.data.code === 200) {
+      showCategoryModal.value = false
+      fetchCategories()
+    } else {
+      alert(res.data.message)
+    }
+  } catch (e: any) {
+    alert(e.response?.data?.message || '保存失败')
+  } finally {
+    saving.value = false
+  }
+}
+
+// Platform Modal Logic
+const showPlatformModal = ref(false)
+const isEditingPlatform = ref(false)
+const platformForm = ref({
+  id: '',
+  name: '',
+  iconClass: 'Monitor',
+  colorHex: '#0078D6',
+  sortOrder: 0
+})
+
+const openPlatformModal = (platform: any = null) => {
+  if (platform) {
+    isEditingPlatform.value = true
+    platformForm.value = { 
+      id: platform.id, 
+      name: platform.name, 
+      iconClass: platform.iconClass || 'Monitor', 
+      colorHex: platform.colorHex || '#0078D6', 
+      sortOrder: platform.sortOrder || 0 
+    }
+  } else {
+    isEditingPlatform.value = false
+    platformForm.value = { id: '', name: '', iconClass: 'Monitor', colorHex: '#0078D6', sortOrder: 0 }
+  }
+  showPlatformModal.value = true
+}
+
+const savePlatform = async () => {
+  try {
+    saving.value = true
+    const url = '/api/admin/platforms'
+    const res = isEditingPlatform.value 
+      ? await http.put(`${url}/${platformForm.value.id}`, platformForm.value)
+      : await http.post(url, platformForm.value)
+    
+    if (res.data.code === 200) {
+      showPlatformModal.value = false
+      fetchPlatforms()
+    } else {
+      alert(res.data.message)
+    }
+  } catch (e: any) {
+    alert(e.response?.data?.message || '保存失败')
+  } finally {
+    saving.value = false
+  }
 }
 
 const deleteCategory = async (id: string) => {

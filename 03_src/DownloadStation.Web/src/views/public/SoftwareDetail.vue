@@ -17,10 +17,11 @@
            <Layers class="w-64 h-64 text-primary" />
         </div>
         
-        <div class="w-32 h-32 sm:w-40 sm:h-40 shrink-0 bg-gradient-to-br from-black/5 to-transparent rounded-3xl p-4 flex items-center justify-center border border-border/50 shadow-inner">
-           <img v-if="software.iconPath" :src="software.iconPath" class="w-full h-full object-contain drop-shadow-md" />
-           <Package v-else class="w-16 h-16 text-textHint" />
-        </div>
+        <SoftwareIcon 
+          :iconPath="software.iconPath" 
+          :platformName="software.platform?.name" 
+          size="2xl" 
+        />
         
         <div class="flex-1 text-center md:text-left z-10">
            <div class="flex items-center justify-center md:justify-start gap-3 mb-2">
@@ -104,6 +105,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ArrowLeft, Loader2, Package, Download, ExternalLink, Layers, Terminal, ShieldCheck } from 'lucide-vue-next'
 import http from '../../api/http'
+import SoftwareIcon from '../../components/common/SoftwareIcon.vue'
 
 const route = useRoute()
 const software = ref<any>(null)

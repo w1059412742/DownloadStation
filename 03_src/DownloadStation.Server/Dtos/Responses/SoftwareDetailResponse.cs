@@ -20,7 +20,9 @@ namespace DownloadStation.Server.Dtos.Responses
         public DateTime UpdatedAt { get; set; }
         
         public PlatformResponse? Platform { get; set; }
+        public List<TagResponse> Tags { get; set; } = new List<TagResponse>();
         public List<SoftwareScreenshotResponse> Screenshots { get; set; } = new();
+
     }
 
     public class SoftwareScreenshotResponse

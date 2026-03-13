@@ -38,5 +38,11 @@ namespace DownloadStation.Server.Dtos.Requests
         /// 平台ID。
         /// </summary>
         public string? PlatformId { get; set; }
+
+        /// <summary>
+        /// 绑定的标签 ID 列表（多对多）。
+        /// </summary>
+        public List<string> TagIds { get; set; } = new List<string>();
+
     }
 }

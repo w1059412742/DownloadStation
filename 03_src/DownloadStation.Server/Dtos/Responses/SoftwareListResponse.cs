@@ -15,5 +15,7 @@ namespace DownloadStation.Server.Dtos.Responses
         public int TotalDownloads { get; set; }
         public DateTime UpdatedAt { get; set; }
         public PlatformResponse? Platform { get; set; }
+        public List<TagResponse> Tags { get; set; } = new List<TagResponse>();
+
     }
 }

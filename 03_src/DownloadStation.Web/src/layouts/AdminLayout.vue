@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
-import { LayoutDashboard, Layers, Box, FolderSearch, LogOut, Monitor } from 'lucide-vue-next'
+import { LayoutDashboard, Layers, Tag as TagIcon, Box, FolderSearch, LogOut, Monitor } from 'lucide-vue-next'
 import AppHeader from '../components/AppHeader.vue'
 
 const route = useRoute()
@@ -58,9 +58,11 @@ const router = useRouter()
 const navItems = [
   { name: '仪表盘', path: '/admin/dashboard', icon: LayoutDashboard },
   { name: '分类与平台', path: '/admin/categories', icon: Layers },
+  { name: '标签管理', path: '/admin/tags', icon: TagIcon },
   { name: '软件管理', path: '/admin/softwares', icon: Box },
   { name: '文件扫描', path: '/admin/files', icon: FolderSearch },
 ]
+
 
 const logout = () => {
   localStorage.removeItem('admin_token')

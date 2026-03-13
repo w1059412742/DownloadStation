@@ -18,6 +18,8 @@ namespace DownloadStation.Server.Data
         public DbSet<Software> Softwares { get; set; } = null!;
         public DbSet<SoftwareScreenshot> SoftwareScreenshots { get; set; } = null!;
         public DbSet<SoftwareVersion> SoftwareVersions { get; set; } = null!;
+        public DbSet<Tag> Tags { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
