@@ -17,12 +17,12 @@ namespace DownloadStation.Server.Controllers.Public
 
         [HttpGet]
         public async Task<IActionResult> GetPaged(
-            [FromQuery] string? categoryId, [FromQuery] string? platformId, 
-            [FromQuery] string? keyword, [FromQuery] string? sortBy, 
+            [FromQuery] string? categoryId, [FromQuery] string? platformId,
+            [FromQuery] string? keyword, [FromQuery] string? sortBy,
             [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
         {
             // 前台不获取草稿，includeDrafts 为 false
-            var data = await _softwareService.GetPagedListAsync(categoryId, platformId, keyword, sortBy, false, page, pageSize);
+            var data = await _softwareService.GetPagedListAsync(categoryId, platformId, null, keyword, sortBy, false, page, pageSize);
             return Ok(Dtos.Responses.ApiResponse<object>.Success(data));
         }
 

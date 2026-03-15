@@ -7,7 +7,7 @@ namespace DownloadStation.Server.Services.Interfaces
     public interface ISoftwareService
     {
         Task<PagedResult<SoftwareListResponse>> GetPagedListAsync(
-            string? categoryId, string? platformId, string? keyword, string? sortBy, bool includeDrafts, int page, int pageSize);
+            string? categoryId, string? platformId, string? tagId, string? keyword, string? sortBy, bool includeDrafts, int page, int pageSize);
 
         Task<SoftwareDetailResponse?> GetByIdAsync(string id);
 

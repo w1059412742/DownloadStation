@@ -20,12 +20,12 @@ namespace DownloadStation.Server.Controllers.Admin
 
         [HttpGet]
         public async Task<IActionResult> GetPaged(
-            [FromQuery] string? categoryId, [FromQuery] string? platformId,
+            [FromQuery] string? categoryId, [FromQuery] string? platformId, [FromQuery] string? tagId,
             [FromQuery] string? keyword, [FromQuery] string? sortBy,
             [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
         {
             // 后台获取全量（包括草稿）
-            var data = await _softwareService.GetPagedListAsync(categoryId, platformId, keyword, sortBy, true, page, pageSize);
+            var data = await _softwareService.GetPagedListAsync(categoryId, platformId, tagId, keyword, sortBy, true, page, pageSize);
             return Ok(Dtos.Responses.ApiResponse<object>.Success(data));
         }
 

@@ -12,7 +12,7 @@ import { Package, Monitor, Apple, Laptop, Smartphone, HelpCircle } from 'lucide-
 interface Props {
   iconPath?: string | null
   platformName?: string | null
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+  size?: 'sm' | 'base' | 'md' | 'lg' | 'xl' | '2xl'
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -62,6 +62,7 @@ const platformColor = computed(() => {
 const sizeClass = computed(() => {
   switch (props.size) {
     case 'sm': return 'w-8 h-8'
+    case 'base': return 'w-12 h-12'
     case 'md': return 'w-10 h-10'
     case 'lg': return 'w-14 h-14'
     case 'xl': return 'w-20 h-20'
@@ -73,6 +74,7 @@ const sizeClass = computed(() => {
 const iconSizeClass = computed(() => {
   switch (props.size) {
     case 'sm': return 'w-4 h-4'
+    case 'base': return 'w-6 h-6'
     case 'md': return 'w-5 h-5'
     case 'lg': return 'w-6 h-6'
     case 'xl': return 'w-10 h-10'

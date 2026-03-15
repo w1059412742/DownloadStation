@@ -1,7 +1,7 @@
 <template>
   <div class="animate-fade-in-up">
     <!-- Header Area: 粘性定位，使用负边距并内补填充抵消父容器 padding，避免空白间隙 -->
-    <div class="flex items-center justify-between pb-3 pt-3 border-b border-border sticky top-0 z-30 bg-surface backdrop-blur-none -mx-6 lg:-mx-10 px-6 lg:px-10">
+    <div class="flex items-center justify-between pb-3 pt-3 border-b border-border sticky top-0 z-30 bg-surface backdrop-blur-none px-6 lg:px-10">
       <div class="flex items-center space-x-4">
         <button @click="$router.push('/admin/softwares')" class="p-2 bg-surface border border-border rounded-xl text-textSecondary hover:text-primary transition-colors">
           <ArrowLeft class="w-5 h-5" />
@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <div class="mt-6 space-y-6">
+    <div class="mt-6 space-y-6 px-6 lg:px-10 pb-10">
     <div v-if="loading" class="flex justify-center py-20">
        <Loader2 class="w-10 h-10 text-primary animate-spin" />
     </div>
@@ -66,11 +66,8 @@
           </div>
 
           <div class="relative">
-            <label class="block text-sm font-medium text-textSecondary mb-1.5 flex items-center justify-between">
-               <span>详细描述</span>
-               <span v-if="isPastingImage" class="text-xs text-primary flex items-center animate-pulse"><Loader2 class="w-3 h-3 mr-1 animate-spin" />图片上传中...</span>
-            </label>
-            <textarea v-model="form.description" @paste="onPasteImage" rows="10" class="w-full px-4 py-3 bg-black/5 border border-transparent focus:border-primary/50 rounded-xl text-sm focus:outline-none transition-colors text-textPrimary placeholder-textHint font-mono mt-1" placeholder="在这里输入详细描述，支持 Markdown 格式...可以直接 Ctrl+V 粘贴截图上传"></textarea>
+            <label class="block text-sm font-medium text-textSecondary mb-3">详细描述</label>
+            <RichEditor v-model="form.description" />
           </div>
         </div>
 
@@ -125,24 +122,51 @@
             <label class="block text-sm font-medium text-textSecondary mb-1.5">所属分类</label>
             <select v-model="form.categoryId" class="w-full px-3 py-2 bg-black/5 border border-transparent focus:border-primary/50 rounded-xl text-sm focus:outline-none transition-colors text-textPrimary appearance-none">
               <option value="">-- 未分类 --</option>
-              <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+              <option v-for="cat in flatCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
             </select>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-textSecondary mb-1.5 line-clamp-1">运行平台 <span class="text-danger">*</span></label>
             <div class="grid grid-cols-2 gap-2 mt-2">
-               <label v-for="p in platforms" :key="p.id" :class="['flex items-center cursor-pointer px-3 py-2 rounded-xl border transition-all', form.platformId === p.id ? 'bg-white border-transparent shadow-soft ring-1 ring-black/5' : 'bg-black/5 border-transparent hover:bg-black/10']">
+               <label v-for="p in platforms" :key="p.id" 
+                      class="flex items-center cursor-pointer px-3 py-2 rounded-xl border transition-all relative overflow-hidden group"
+                      :class="{ 
+                        'bg-primary/5 border-primary shadow-soft ring-1 ring-primary/20': form.platformId === p.id,
+                        'bg-black/5 border-transparent hover:bg-black/10 hover:border-border': form.platformId !== p.id 
+                      }">
                   <input type="radio" :value="p.id" v-model="form.platformId" class="sr-only" />
-                  <span class="w-2.5 h-2.5 rounded-full mr-2 shrink-0" :style="{ backgroundColor: p.colorHex || '#9CA3AF' }"></span>
-                  <span :class="['text-xs font-bold truncate', form.platformId === p.id ? 'text-textPrimary' : 'text-textSecondary']">{{ p.name }}</span>
+                  <span class="w-2.5 h-2.5 rounded-full mr-2 shrink-0 transition-transform" 
+                        :class="form.platformId === p.id ? 'scale-110' : 'group-hover:scale-110'"
+                        :style="{ backgroundColor: p.colorHex || '#9CA3AF' }"></span>
+                  <span class="text-xs font-bold truncate transition-colors z-10"
+                        :class="form.platformId === p.id ? 'text-primary' : 'text-textSecondary group-hover:text-textPrimary'">
+                    {{ p.name }}
+                  </span>
+                  <!-- Selected Indicator Background -->
+                  <div v-if="form.platformId === p.id" class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-primary/10 to-transparent flex items-center justify-end pr-2">
+                     <svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>
+                  </div>
                </label>
             </div>
             <p v-if="!form.platformId" class="text-[10px] text-danger mt-2 italic">* 请选择软件所属平台</p>
           </div>
 
-          <div class="pt-2">
-            <label class="block text-sm font-medium text-textSecondary mb-2 flex items-center">
+            <div class="pt-2">
+              <label class="block text-sm font-medium text-textSecondary mb-2 flex items-center">
+                <TagIcon class="w-4 h-4 mr-2 text-primary" /> 是否发布
+              </label>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" v-model="form.status" :true-value="1" :false-value="0" class="sr-only peer">
+                <div class="w-11 h-6 bg-black/10 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                <span class="ml-3 text-sm font-medium" :class="form.status === 1 ? 'text-textPrimary' : 'text-textSecondary'">
+                  {{ form.status === 1 ? '已发布' : '未发布 (草稿)' }}
+                </span>
+              </label>
+            </div>
+
+            <div class="pt-2">
+              <label class="block text-sm font-medium text-textSecondary mb-2 flex items-center">
               <TagIcon class="w-4 h-4 mr-2 text-primary" /> 软件标签
             </label>
             <div class="flex flex-wrap gap-2">
@@ -170,9 +194,15 @@
 
         <!-- Upload Package Card -->
         <div class="bg-surface rounded-2xl p-6 border border-border shadow-soft space-y-5">
-           <h3 class="text-lg font-bold text-textPrimary border-b border-border pb-3 flex items-center">
-             <UploadCloud class="w-5 h-5 mr-2 text-primary" /> 上传新版本
-           </h3>
+           <div class="flex items-center justify-between border-b border-border pb-3">
+             <h3 class="text-lg font-bold text-textPrimary flex items-center">
+               <UploadCloud class="w-5 h-5 mr-2 text-primary" /> {{ uploadMode === 'upload' ? '上传新版本' : '登记本地路径' }}
+             </h3>
+             <div class="flex p-1 bg-black/5 rounded-lg">
+                <button @click="uploadMode = 'upload'" :class="['px-2 py-1 text-[10px] font-bold rounded-md transition-all', uploadMode === 'upload' ? 'bg-white shadow-soft text-primary' : 'text-textHint']">文件上传</button>
+                <button @click="uploadMode = 'manual'" :class="['px-2 py-1 text-[10px] font-bold rounded-md transition-all', uploadMode === 'manual' ? 'bg-white shadow-soft text-primary' : 'text-textHint']">手动路径</button>
+             </div>
+           </div>
 
            <!-- 编辑及新增模式下皆显示上传表单 -->
            <div class="space-y-4">
@@ -181,13 +211,17 @@
                   <label class="block text-[10px] font-bold text-textHint uppercase mb-1">版本号</label>
                   <input v-model="uploadForm.versionNumber" type="text" class="w-full px-3 py-2 bg-black/5 border border-transparent focus:border-primary/50 rounded-lg text-sm focus:outline-none" placeholder="1.0.0" />
                 </div>
-                <div>
+                <div v-if="uploadMode === 'upload'">
                   <label class="block text-[10px] font-bold text-textHint uppercase mb-1">安装包文件</label>
                   <label class="flex items-center justify-center px-3 py-2 bg-black/5 hover:bg-black/10 rounded-lg cursor-pointer transition-colors border border-dashed border-border group">
                     <input type="file" class="sr-only" @change="onFileChange" />
                     <Paperclip v-if="!uploadFile" class="w-4 h-4 text-textHint group-hover:text-primary transition-colors" />
                     <span class="text-xs text-textSecondary truncate max-w-[80px] ml-1">{{ uploadFile ? uploadFile.name : '选择文件' }}</span>
                   </label>
+                </div>
+                <div v-else>
+                  <label class="block text-[10px] font-bold text-textHint uppercase mb-1">服务器绝对路径</label>
+                  <input v-model="manualPath" type="text" class="w-full px-3 py-2 bg-black/5 border border-transparent focus:border-primary/50 rounded-lg text-sm focus:outline-none" placeholder="/mnt/data/files/..." />
                 </div>
               </div>
               
@@ -203,8 +237,8 @@
               <div v-if="isNew" class="text-xs text-textHint text-center mt-2 italic px-2">
                  * 提醒：请在页面上方点击「保存并上传」按钮，系统将自动录入软件并绑定此安装包。
               </div>
-              <button v-else @click="handleUpload" :disabled="uploading || !uploadFile || !uploadForm.versionNumber" class="w-full py-2.5 bg-textPrimary text-white rounded-xl text-xs font-bold hover:bg-black transition-all flex items-center justify-center disabled:opacity-30">
-                 <UploadCloud class="w-4 h-4 mr-2" /> {{ uploading ? `上传中 ${uploadProgress}%` : '开始上传安装包' }}
+              <button v-else-if="uploadForm.versionNumber && (uploadFile || manualPath)" @click="handleUpload" :disabled="uploading" class="w-full py-2.5 bg-textPrimary text-white rounded-xl text-xs font-bold hover:bg-black transition-all flex items-center justify-center animate-fade-in-up">
+                 <UploadCloud class="w-4 h-4 mr-2" /> {{ uploading ? (uploadMode === 'upload' ? `上传中 ${uploadProgress}%` : '绑定中...') : (uploadMode === 'upload' ? '开始上传安装包' : '立即绑定路径') }}
               </button>
            </div>
         </div>
@@ -237,9 +271,10 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ArrowLeft, Save, Loader2, Terminal, ShieldCheck, Clock, Trash, UploadCloud, Paperclip, Eye, EyeOff, Edit2, Image, Tag as TagIcon } from 'lucide-vue-next'
+import { ArrowLeft, Save, Loader2, Terminal, ShieldCheck, Clock, Trash, UploadCloud, Paperclip, Eye, EyeOff, Edit2, Tag as TagIcon } from 'lucide-vue-next'
 import http from '../../api/http'
 import SoftwareIcon from '../../components/common/SoftwareIcon.vue'
+import RichEditor from '../../components/common/RichEditor.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -247,8 +282,6 @@ const isNew = computed(() => route.params.id === 'new')
 
 const loading = ref(false)
 const saving = ref(false)
-
-const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5186'
 
 const form = ref({
   name: '',
@@ -258,6 +291,7 @@ const form = ref({
   officialUrl: '',
   categoryId: '',
   platformId: '',
+  status: 1, // Default to Published (1)
   tagIds: [] as string[]
 })
 
@@ -268,8 +302,9 @@ const uploadForm = reactive({
 const uploadFile = ref<File | null>(null)
 const uploading = ref(false)
 const uploadProgress = ref(0)
-const isPastingImage = ref(false)
 const isUploadingIcon = ref(false)
+const uploadMode = ref<'upload' | 'manual'>('upload')
+const manualPath = ref('')
 
 const currentPlatformName = computed(() => {
    const p = platforms.value.find(x => x.id === form.value.platformId)
@@ -299,6 +334,21 @@ const platforms = ref<any[]>([])
 const allTags = ref<any[]>([])
 const versions = ref<any[]>([])
 
+const flatCategories = computed(() => {
+  const result: any[] = []
+  const traverse = (nodes: any[], depth = 0) => {
+    nodes.forEach(node => {
+      const prefix = depth > 0 ? '　'.repeat(depth) + '├─ ' : ''
+      result.push({ id: node.id, name: prefix + node.name })
+      if (node.children && node.children.length > 0) {
+        traverse(node.children, depth + 1)
+      }
+    })
+  }
+  traverse(categories.value)
+  return result
+})
+
 const fetchData = async () => {
   loading.value = true
   try {
@@ -325,6 +375,7 @@ const fetchData = async () => {
           officialUrl: d.officialUrl || '',
           categoryId: d.categoryId || '',
           platformId: d.platform?.id || '',
+          status: d.status,
           tagIds: d.tags ? d.tags.map((t: any) => t.id) : []
         }
       }
@@ -391,7 +442,8 @@ const save = async () => {
       if (!newId) throw new Error('未能获取新建软件 ID')
 
       // 2. 串行上传安装包（独立捕获异常，防止上传失败阻断进入编辑页路由）
-      if (uploadFile.value) {
+      // 2. 关联安装包
+      if (uploadMode.value === 'upload' && uploadFile.value) {
         const formData = new FormData()
         formData.append('file', uploadFile.value)
         formData.append('softwareId', newId)
@@ -409,6 +461,18 @@ const save = async () => {
           alert('软件档案与首个版本安装包上传成功！')
         } catch (upErr: any) {
           alert('软件已成功创建，但安装包上传失败：' + (upErr.response?.data?.message || upErr.message))
+        }
+      } else if (uploadMode.value === 'manual' && manualPath.value) {
+        try {
+          await http.post('/api/admin/files/bind', {
+            softwareId: newId,
+            versionNumber: uploadForm.versionNumber,
+            changelog: uploadForm.changelog,
+            filePath: manualPath.value
+          })
+          alert('软件档案已创建，路径绑定成功！')
+        } catch (bindErr: any) {
+          alert('软件已成功创建，但路径绑定失败：' + (bindErr.response?.data?.message || bindErr.message))
         }
       }
       
@@ -483,88 +547,59 @@ const onFileChange = (e: any) => {
 }
 
 const handleUpload = async () => {
-  if (!uploadFile.value || !uploadForm.versionNumber) return
+  if (uploadMode.value === 'upload' && (!uploadFile.value || !uploadForm.versionNumber)) return
+  if (uploadMode.value === 'manual' && (!manualPath.value || !uploadForm.versionNumber)) return
 
   uploading.value = true
   uploadProgress.value = 0
   
-  const formData = new FormData()
-  formData.append('file', uploadFile.value)
-  formData.append('softwareId', route.params.id as string)
-  formData.append('versionNumber', uploadForm.versionNumber)
-  formData.append('changelog', uploadForm.changelog)
-
   try {
-    const res = await http.post('/api/admin/versions/upload', formData, {
-      onUploadProgress: (progressEvent) => {
-        if (progressEvent.total) {
-          uploadProgress.value = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-        }
-      }
-    })
+    if (uploadMode.value === 'upload') {
+      const formData = new FormData()
+      formData.append('file', uploadFile.value!)
+      formData.append('softwareId', route.params.id as string)
+      formData.append('versionNumber', uploadForm.versionNumber)
+      formData.append('changelog', uploadForm.changelog)
 
-    if (res.data.code === 200) {
-       // 重置上传表单
-       uploadFile.value = null
-       uploadForm.versionNumber = ''
-       uploadForm.changelog = ''
-       // 刷新版本列表
-       const verRes = await http.get(`/api/admin/versions/software/${route.params.id}`)
-       if (verRes.data.code === 200) versions.value = verRes.data.data
-       alert('安装包上传成功！')
+      const res = await http.post('/api/admin/versions/upload', formData, {
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            uploadProgress.value = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          }
+        }
+      })
+
+      if (res.data.code === 200) {
+        uploadFile.value = null
+        uploadForm.versionNumber = ''
+        uploadForm.changelog = ''
+        await loadVersions()
+        alert('安装包上传成功！')
+      }
+    } else {
+      const res = await http.post('/api/admin/files/bind', {
+        softwareId: route.params.id as string,
+        versionNumber: uploadForm.versionNumber,
+        changelog: uploadForm.changelog,
+        filePath: manualPath.value
+      })
+
+      if (res.data.code === 200) {
+        manualPath.value = ''
+        uploadForm.versionNumber = ''
+        uploadForm.changelog = ''
+        await loadVersions()
+        alert('本地路径绑定成功！')
+      }
     }
   } catch (error: any) {
-    alert(error.response?.data?.message || '上传失败')
+    alert(error.response?.data?.message || '操作失败')
   } finally {
     uploading.value = false
     uploadProgress.value = 0
   }
 }
 
-const onPasteImage = async (e: ClipboardEvent) => {
-  const items = e.clipboardData?.items
-  if (!items) return
-
-  let imageFile: File | null = null
-  for (let i = 0; i < items.length; i++) {
-    if (items[i].type.indexOf('image') === 0) {
-      imageFile = items[i].getAsFile()
-      break
-    }
-  }
-
-  if (imageFile) {
-    e.preventDefault()
-    isPastingImage.value = true
-    const formData = new FormData()
-    formData.append('file', imageFile)
-    
-    try {
-      const res = await http.post('/api/admin/softwares/upload-image', formData)
-      if (res.data.code === 200) {
-         const url = `${import.meta.env.VITE_API_URL || 'http://localhost:5186'}${res.data.data.url}`
-         const mdImage = `\n![图片说明](${url})\n`
-         
-         const textarea = e.target as HTMLTextAreaElement
-         const start = textarea.selectionStart
-         const end = textarea.selectionEnd
-         const text = form.value.description || ''
-         
-         form.value.description = text.substring(0, start) + mdImage + text.substring(end)
-         
-         // 焦点还原至插入后的位置
-         setTimeout(() => {
-            textarea.selectionStart = textarea.selectionEnd = start + mdImage.length
-            textarea.focus()
-         }, 0)
-      }
-    } catch (error) {
-      alert('图片上传失败，请检查网络或配置。')
-    } finally {
-      isPastingImage.value = false
-    }
-  }
-}
 </script>
 
 <style scoped>

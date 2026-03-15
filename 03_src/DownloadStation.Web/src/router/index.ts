@@ -82,7 +82,7 @@ const router = createRouter({
 
 // 简单前置路由守卫
 router.beforeEach((to, _from, next) => {
-  document.title = `${to.meta.title} - 下载站`
+  document.title = `${to.meta.title} - 应用私藏馆`
 
   const isAuthenticated = !!localStorage.getItem('admin_token')
 

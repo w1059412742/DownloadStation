@@ -22,7 +22,7 @@ namespace DownloadStation.Server.Services.Implementations
         }
 
         public async Task<PagedResult<SoftwareListResponse>> GetPagedListAsync(
-            string? categoryId, string? platformId, string? keyword,
+            string? categoryId, string? platformId, string? tagId, string? keyword,
             string? sortBy, bool includeDrafts, int page, int pageSize)
         {
             var query = _context.Softwares
@@ -62,6 +62,11 @@ namespace DownloadStation.Server.Services.Implementations
                 query = query.Where(s => s.PlatformId == platformId);
             }
 
+            if (!string.IsNullOrWhiteSpace(tagId))
+            {
+                query = query.Where(s => s.Tags.Any(t => t.Id == tagId));
+            }
+
             // 排序逻辑
             if (sortBy?.ToLower() == "popular")
             {
@@ -83,6 +88,7 @@ namespace DownloadStation.Server.Services.Implementations
                 Id = s.Id,
                 Name = s.Name,
                 Summary = s.Summary,
+                Description = s.Description,
                 IconPath = s.IconPath,
                 CategoryName = s.Category?.Name,
                 Status = s.Status,
@@ -183,13 +189,13 @@ namespace DownloadStation.Server.Services.Implementations
                 OfficialUrl = request.OfficialUrl,
                 CategoryId = string.IsNullOrWhiteSpace(request.CategoryId) ? null : request.CategoryId,
                 PlatformId = string.IsNullOrWhiteSpace(request.PlatformId) ? null : request.PlatformId,
-                Status = SoftwareStatus.Draft, // 默认下架草稿
+                Status = request.Status,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
 
             _context.Softwares.Add(software);
-            
+
             // 处理标签关联
             if (request.TagIds != null && request.TagIds.Any())
             {
@@ -218,6 +224,7 @@ namespace DownloadStation.Server.Services.Implementations
             software.OfficialUrl = request.OfficialUrl;
             software.CategoryId = string.IsNullOrWhiteSpace(request.CategoryId) ? null : request.CategoryId;
             software.PlatformId = string.IsNullOrWhiteSpace(request.PlatformId) ? null : request.PlatformId;
+            software.Status = request.Status;
             software.UpdatedAt = DateTime.UtcNow;
 
             _context.Softwares.Update(software);

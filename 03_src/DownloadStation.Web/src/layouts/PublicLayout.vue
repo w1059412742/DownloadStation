@@ -18,7 +18,7 @@
         <div class="max-w-7xl mx-auto px-6 py-6">
           <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
             <p class="text-sm text-muted-foreground">
-              © {{ new Date().getFullYear() }} 下载站. All rights reserved.
+              © {{ new Date().getFullYear() }} 应用私藏馆. 黑糖 All rights reserved.
             </p>
           </div>
         </div>

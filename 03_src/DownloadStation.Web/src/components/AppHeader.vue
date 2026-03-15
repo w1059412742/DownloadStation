@@ -7,7 +7,7 @@
           <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
             <Download class="w-5 h-5 text-primary-foreground" />
           </div>
-          <span class="text-lg font-semibold text-foreground tracking-tight">下载站</span>
+          <span class="text-lg font-semibold text-foreground tracking-tight">应用私藏馆</span>
         </a>
 
         <!-- 居中导航：仅登录后显示 -->

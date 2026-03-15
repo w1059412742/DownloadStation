@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 animate-fade-in-up">
+  <div class="space-y-6 animate-fade-in-up p-6 lg:p-10">
     <!-- Header Area -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface p-6 rounded-2xl border border-border shadow-soft">
       <div>
@@ -168,10 +168,24 @@
               <input v-model="platformForm.iconClass" type="text" placeholder="例如：Monitor" class="w-full px-4 py-2 bg-black/5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-textPrimary" />
             </div>
             <div>
-              <label class="block text-xs font-bold text-textSecondary uppercase mb-1.5">主题色 (Hex)</label>
-              <div class="flex space-x-2">
-                <input v-model="platformForm.colorHex" type="color" class="w-10 h-10 rounded-lg overflow-hidden p-0 border-0 bg-transparent cursor-pointer" />
-                <input v-model="platformForm.colorHex" type="text" placeholder="#0078D6" class="flex-1 px-4 py-2 bg-black/5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-textPrimary text-xs font-mono" />
+              <label class="block text-xs font-bold text-textSecondary uppercase mb-1.5">主题色</label>
+              <div class="relative group/color">
+                <div @click="showColorPicker = !showColorPicker" class="w-full px-4 py-2 pl-10 bg-black/5 border border-border rounded-xl cursor-pointer flex items-center justify-between text-textPrimary hover:bg-black/10 transition-colors">
+                  <span>{{ colorOptions.find(o => o.value === platformForm.colorHex)?.label || '选择颜色' }}</span>
+                  <div class="absolute left-3 top-2.5 w-4 h-4 rounded-full border border-border transition-transform group-hover/color:scale-110" :style="{ backgroundColor: platformForm.colorHex }"></div>
+                  <X v-if="showColorPicker" class="w-3.5 h-3.5 text-textHint" />
+                  <div v-else class="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[5px] border-t-textHint"></div>
+                </div>
+                
+                <div v-if="showColorPicker" class="absolute z-[60] left-0 right-0 mt-2 p-2 bg-surface border border-border rounded-2xl shadow-xl animate-fade-in-up">
+                  <div v-for="opt in colorOptions" :key="opt.value" 
+                       @click="platformForm.colorHex = opt.value; showColorPicker = false"
+                       class="flex items-center space-x-3 px-3 py-2 rounded-xl hover:bg-black/5 cursor-pointer transition-colors group/item">
+                    <div class="w-4 h-4 rounded-full border border-border group-hover/item:scale-110 transition-transform" :style="{ backgroundColor: opt.value }"></div>
+                    <span class="text-sm text-textPrimary">{{ opt.label }}</span>
+                    <span class="text-[10px] text-textHint font-mono ml-auto opacity-0 group-hover/item:opacity-100">{{ opt.value }}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -201,6 +215,19 @@ const categories = ref<any[]>([])
 const platforms = ref<any[]>([])
 const loadingCategories = ref(true)
 const loadingPlatforms = ref(true)
+const showColorPicker = ref(false)
+
+const colorOptions = [
+  { value: '#0078D6', label: '天空蓝' },
+  { value: '#10B981', label: '翠绿' },
+  { value: '#8B5CF6', label: '紫罗兰' },
+  { value: '#F43F5E', label: '珊瑚红' },
+  { value: '#F59E0B', label: '琥珀黄' },
+  { value: '#6B7280', label: '石板灰' },
+  { value: '#3B82F6', label: '亮湛蓝' },
+  { value: '#EC4899', label: '魅惑粉' },
+  { value: '#000000', label: '深邃黑' }
+]
 
 const fetchCategories = async () => {
   try {
@@ -226,7 +253,8 @@ const flatCategories = computed(() => {
   const result: any[] = []
   const traverse = (nodes: any[]) => {
     nodes.forEach(node => {
-      result.push({ id: node.id, name: node.name })
+      // Keep essential info for sortOrder calculation too
+      result.push({ id: node.id, name: node.name, sortOrder: node.sortOrder })
       if (node.children && node.children.length > 0) {
         traverse(node.children)
       }
@@ -264,7 +292,11 @@ const openCategoryModal = (category: any = null) => {
     }
   } else {
     isEditingCategory.value = false
-    categoryForm.value = { id: '', name: '', parentId: '', sortOrder: 0 }
+    // Calculate max sortOrder + 1
+    const maxSort = flatCategories.value.length > 0 
+      ? Math.max(...flatCategories.value.map((c: any) => c.sortOrder || 0)) 
+      : 0
+    categoryForm.value = { id: '', name: '', parentId: '', sortOrder: maxSort + 1 }
   }
   showCategoryModal.value = true
 }
@@ -313,7 +345,11 @@ const openPlatformModal = (platform: any = null) => {
     }
   } else {
     isEditingPlatform.value = false
-    platformForm.value = { id: '', name: '', iconClass: 'Monitor', colorHex: '#0078D6', sortOrder: 0 }
+    // Calculate max sortOrder + 1
+    const maxSort = platforms.value.length > 0 
+      ? Math.max(...platforms.value.map((p: any) => p.sortOrder || 0)) 
+      : 0
+    platformForm.value = { id: '', name: '', iconClass: 'Monitor', colorHex: '#0078D6', sortOrder: maxSort + 1 }
   }
   showPlatformModal.value = true
 }

@@ -21,11 +21,29 @@ namespace DownloadStation.Server.Services.Implementations
             _config = config;
         }
 
-        public async Task<List<UnboundFileResponse>> ScanUnboundFilesAsync()
+        /// <summary>
+        /// 扫描未绑定的物理文件。
+        /// </summary>
+        /// <param name="customPath">可选的自定义扫描路径。</param>
+        /// <returns>未绑定文件列表。</returns>
+        public async Task<List<UnboundFileResponse>> ScanUnboundFilesAsync(string? customPath = null)
         {
             var basePath = _config.GetValue<string>("AppSettings:StorageBasePath") ?? "./SoftwareStorage";
+            
+            // 如果提供了自定义路径，则使用自定义路径
+            if (!string.IsNullOrWhiteSpace(customPath))
+            {
+                basePath = customPath;
+            }
+
             if (!Directory.Exists(basePath))
             {
+                // 如果是默认路径且不存在，则创建。如果是自定义路径且不存在，则返回空或抛出异常。
+                // 这里选择如果是自定义路径且不存在，直接返回空列表，防止创建非法目录。
+                if (!string.IsNullOrWhiteSpace(customPath))
+                {
+                    return new List<UnboundFileResponse>();
+                }
                 Directory.CreateDirectory(basePath);
             }
 

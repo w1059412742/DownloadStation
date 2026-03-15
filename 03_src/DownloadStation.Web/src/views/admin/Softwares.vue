@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 animate-fade-in-up">
+  <div class="space-y-6 animate-fade-in-up p-6 lg:p-10">
     <!-- Header Area -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface p-6 rounded-2xl border border-border shadow-soft">
       <div>
@@ -26,6 +26,25 @@
             <Search class="w-4 h-4 text-textHint" />
           </div>
         </div>
+        
+        <!-- Dropdown Filters -->
+        <div class="flex-1 flex flex-col sm:flex-row gap-3">
+          <select v-model="filters.platformId" @change="fetchData" class="w-full sm:w-32 px-3 py-2 bg-surface border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-textPrimary appearance-none">
+            <option value="">全部平台</option>
+            <option v-for="p in platforms" :key="p.id" :value="p.id">{{ p.name }}</option>
+          </select>
+          
+          <select v-model="filters.categoryId" @change="fetchData" class="w-full sm:w-36 px-3 py-2 bg-surface border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-textPrimary appearance-none">
+            <option value="">所有分类</option>
+            <option v-for="c in flatCategories" :key="c.id" :value="c.id">{{ c.name }}</option>
+          </select>
+          
+          <select v-model="filters.tagId" @change="fetchData" class="w-full sm:w-36 px-3 py-2 bg-surface border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-textPrimary appearance-none">
+            <option value="">所有标签</option>
+            <option v-for="t in allTags" :key="t.id" :value="t.id">{{ t.name }}</option>
+          </select>
+        </div>
+
         <div>
           <button @click="fetchData" class="px-4 py-2 bg-white border border-border rounded-xl text-sm font-medium hover:bg-black/5 transition-colors">
             查询
@@ -42,8 +61,9 @@
           <thead>
             <tr class="bg-black/5 text-xs text-textSecondary uppercase tracking-wider">
               <th class="px-6 py-4 font-semibold">软件信息</th>
-              <th class="px-6 py-4 font-semibold">关联标签</th>
+              <th class="px-6 py-4 font-semibold">所属平台</th>
               <th class="px-6 py-4 font-semibold">所属分类</th>
+              <th class="px-6 py-4 font-semibold">关联标签</th>
               <th class="px-6 py-4 font-semibold">展示状态</th>
               <th class="px-6 py-4 font-semibold">下载次数</th>
               <th class="px-6 py-4 font-semibold text-right">操作</th>
@@ -70,6 +90,16 @@
                 </div>
               </td>
               <td class="px-6 py-4">
+                <span v-if="item.platform" class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-black/5 text-textSecondary border border-border">
+                  <span class="w-1.5 h-1.5 rounded-full mr-1.5" :style="{ backgroundColor: item.platform.colorHex || '#94a3b8' }"></span>
+                  {{ item.platform.name }}
+                </span>
+                <span v-else class="text-xs text-textHint">未指定</span>
+              </td>
+              <td class="px-6 py-4 text-sm text-textSecondary">
+                {{ item.categoryName || '未分配' }}
+              </td>
+              <td class="px-6 py-4">
                 <div class="flex flex-wrap gap-1.5 max-w-[160px]">
                   <span v-for="tag in item.tags" :key="tag.id" 
                         class="inline-flex items-center px-2 py-0.5 rounded text-[10px] bg-black/5 text-textSecondary border border-border"
@@ -79,9 +109,6 @@
                   </span>
                   <span v-if="!item.tags || item.tags.length === 0" class="text-[10px] text-textHint">无</span>
                 </div>
-              </td>
-              <td class="px-6 py-4 text-sm text-textSecondary">
-                {{ item.categoryName || '未分配' }}
               </td>
               <td class="px-6 py-4">
                 <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium" 
@@ -125,12 +152,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { Box, Plus, Search, Loader2, Package, Edit2, Eye, EyeOff, Trash2 } from 'lucide-vue-next'
+import { ref, onMounted, computed } from 'vue'
+import { Box, Plus, Search, Loader2, Edit2, Eye, EyeOff, Trash2 } from 'lucide-vue-next'
 import http from '../../api/http'
 import SoftwareIcon from '../../components/common/SoftwareIcon.vue'
-
-const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5186'
 
 const items = ref<any[]>([])
 const loading = ref(false)
@@ -138,7 +163,29 @@ const total = ref(0)
 const filters = ref({
   page: 1,
   pageSize: 20,
-  keyword: ''
+  keyword: '',
+  platformId: '',
+  categoryId: '',
+  tagId: ''
+})
+
+const platforms = ref<any[]>([])
+const categories = ref<any[]>([])
+const allTags = ref<any[]>([])
+
+const flatCategories = computed(() => {
+  const result: any[] = []
+  const traverse = (nodes: any[], depth = 0) => {
+    nodes.forEach(node => {
+      const prefix = depth > 0 ? '　'.repeat(depth) + '├─ ' : ''
+      result.push({ id: node.id, name: prefix + node.name })
+      if (node.children && node.children.length > 0) {
+        traverse(node.children, depth + 1)
+      }
+    })
+  }
+  traverse(categories.value)
+  return result
 })
 
 const fetchData = async () => {
@@ -180,7 +227,23 @@ const deleteSoftware = async (id: string) => {
   }
 }
 
-onMounted(() => {
+const loadDictData = async () => {
+  try {
+    const [platRes, catRes, tagRes] = await Promise.all([
+      http.get('/api/admin/platforms'),
+      http.get('/api/admin/categories'),
+      http.get('/api/admin/tags')
+    ])
+    if (platRes.data.code === 200) platforms.value = platRes.data.data
+    if (catRes.data.code === 200) categories.value = catRes.data.data
+    if (tagRes.data.code === 200) allTags.value = tagRes.data.data
+  } catch (error) {
+    console.error('Failed to load dictionary data', error)
+  }
+}
+
+onMounted(async () => {
+  await loadDictData()
   fetchData()
 })
 </script>

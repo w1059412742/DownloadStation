@@ -25,9 +25,9 @@ namespace DownloadStation.Server.Controllers.Admin
         }
 
         [HttpGet("scan")]
-        public async Task<IActionResult> ScanUnbound()
+        public async Task<IActionResult> ScanUnbound([FromQuery] string? path)
         {
-            var data = await _fileService.ScanUnboundFilesAsync();
+            var data = await _fileService.ScanUnboundFilesAsync(path);
             return Ok(Dtos.Responses.ApiResponse<object>.Success(data));
         }
 

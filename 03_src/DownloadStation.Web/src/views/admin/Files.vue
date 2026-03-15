@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6 animate-fade-in-up">
+  <div class="space-y-6 animate-fade-in-up p-6 lg:p-10">
     <!-- Header Area -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface p-6 rounded-2xl border border-border shadow-soft">
       <div>
@@ -9,7 +9,15 @@
         </h1>
         <p class="text-sm text-textSecondary mt-1">扫描 NAS 存储目录中尚未关联到软件版本的文件。</p>
       </div>
-      <div>
+      <div class="flex items-center gap-4">
+        <div class="relative min-w-[300px]">
+          <input 
+            v-model="scanPath" 
+            type="text" 
+            placeholder="自定义扫描路径 (留空使用默认)" 
+            class="w-full px-4 py-2 bg-surface border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+          />
+        </div>
         <button @click="scanFiles" :disabled="loading" class="flex items-center px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primaryHover transition-colors shadow-soft hover:shadow-hover disabled:opacity-50">
           <Radar class="w-4 h-4 mr-2" :class="{'animate-spin': loading}" />           {{ loading ? '扫描中...' : '开始扫描' }}
         </button>
@@ -67,16 +75,19 @@ import http from '../../api/http'
 
 const files = ref<any[]>([])
 const loading = ref(false)
+const scanPath = ref('')
 
 const scanFiles = async () => {
   loading.value = true
   try {
-    const res = await http.get('/api/admin/files/scan')
+    const res = await http.get('/api/admin/files/scan', {
+      params: { path: scanPath.value }
+    })
     if (res.data.code === 200) {
       files.value = res.data.data
     }
   } catch (error: any) {
-    alert(error.response?.data?.message || '扫描失败，请检查 NAS 存储路径配置。')
+    alert(error.response?.data?.message || '扫描失败，请检查路径是否正确及权限设置。')
   } finally {
     loading.value = false
   }

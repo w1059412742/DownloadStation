@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DownloadStation.Server.Models.Enums;
 
 namespace DownloadStation.Server.Dtos.Requests
 {
@@ -43,6 +44,11 @@ namespace DownloadStation.Server.Dtos.Requests
         /// 更新后需要绑定的标签 ID 列表。
         /// </summary>
         public List<string> TagIds { get; set; } = new List<string>();
+
+        /// <summary>
+        /// 软件的发布状态。
+        /// </summary>
+        public SoftwareStatus Status { get; set; }
 
     }
 }

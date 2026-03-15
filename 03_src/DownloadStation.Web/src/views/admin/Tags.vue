@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 p-6 lg:p-10 font-sans">
     <!-- 页面标题与操作 -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
