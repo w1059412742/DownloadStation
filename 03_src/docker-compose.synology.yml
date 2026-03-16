@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  downloadstation:
-    image: your-private-registry/downloadstation:latest  # 请修改为您的私有仓库地址
-    container_name: downloadstation
+  softstation:
+    image: dockerhub.heitang.top:8443/softstation:latest  # 请修改为您的私有仓库地址
+    container_name: softstation
     restart: always
     ports:
       - "20000:8080"
@@ -16,6 +16,7 @@ services:
       # 这个是您用来存放安装包的文件夹
       # 请将宿主机路径修改为您群晖上的实际路径，例如 /volume1/Software
       - ./software_repo:/data/software
+      - ./config/appsettings.json:/app/appsettings.json
       
     environment:
       - TZ=Asia/Shanghai

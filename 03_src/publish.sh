@@ -5,7 +5,7 @@
 # ========== 配置区域 ==========
 # 请在此处填写您的私有仓库地址
 REGISTRY="dockerhub.heitang.top:8443"
-IMAGE_NAME="Softstation"
+IMAGE_NAME="softstation"
 
 # 1. 获取动态版本号
 read -p "请输入发布版本号 (例如 1.0.1): " VERSION

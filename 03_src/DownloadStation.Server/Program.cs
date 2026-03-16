@@ -118,6 +118,22 @@ app.MapControllers();
 // 配置前端静态资源托管 (供正式部署使用)
 app.UseStaticFiles(); 
 
+// 自动执行数据库迁移
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "数据库迁移过程中发生错误。");
+    }
+}
+
 // 处理 Vue 路由回退 (Vue Router History Mode)
 app.MapFallbackToFile("index.html");
 
