@@ -16,7 +16,6 @@ services:
       # 这个是您用来存放安装包的文件夹
       # 请将宿主机路径修改为您群晖上的实际路径，例如 /volume1/Software
       - ./software_repo:/data/software
-      - ./config/appsettings.json:/app/appsettings.json
       
     environment:
       - TZ=Asia/Shanghai

@@ -206,7 +206,7 @@ const uploadAndInsertImage = async (file: File) => {
   try {
     const res = await http.post('/api/admin/softwares/upload-image', formData)
     if (res.data.code === 200) {
-      const url = `${import.meta.env.VITE_API_URL || 'http://localhost:5186'}${res.data.data.url}`
+      const url = res.data.data.url
       editor.value?.chain().focus().setImage({ src: url }).run()
     }
   } catch (error) {

@@ -21,7 +21,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md'
 })
 
-const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5186'
+const apiUrl = ''
 const hasError = ref(false)
 
 // 当 iconPath 改变时重置错误状态
@@ -33,11 +33,7 @@ const onIconError = () => {
   hasError.value = true
 }
 
-const fullIconUrl = computed(() => {
-  if (!props.iconPath) return ''
-  if (props.iconPath.startsWith('http')) return props.iconPath
-  return `${apiUrl}${props.iconPath}`
-})
+const fullIconUrl = computed(() => props.iconPath || '')
 
 const platformIcon = computed(() => {
   if (!props.platformName) return Package
