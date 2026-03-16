@@ -18,6 +18,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'SoftwareDetail',
         component: () => import('../views/public/SoftwareDetail.vue'),
         meta: { title: '软件详情' }
+      },
+      {
+        path: 's/:id',
+        name: 'SoftwareShare',
+        component: () => import('../views/public/SoftwareDetail.vue'),
+        meta: { title: '软件分享' }
       }
     ]
   },

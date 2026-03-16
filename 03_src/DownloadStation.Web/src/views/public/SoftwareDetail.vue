@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-6xl mx-auto px-4 py-6 sm:py-8 animate-fade-in-up">
-    <!-- 顶部返回 -->
-    <div class="mb-4">
+    <!-- 顶部返回 (分享模式下隐藏) -->
+    <div v-if="!isShareMode" class="mb-4">
       <button @click="$router.push('/')" class="flex items-center text-sm font-medium text-textSecondary hover:text-primary transition-colors group">
         <ArrowLeft class="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 返回首页
       </button>
@@ -52,9 +52,14 @@
 
         <!-- 右部：下载动作区 -->
         <div class="flex flex-col items-center md:items-end gap-3 z-10 min-w-[200px]">
-          <button @click="triggerLatestDownload" class="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white rounded-2xl text-base font-bold transition-all shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group transform hover:-translate-y-0.5 active:scale-95">
-            <Download class="w-5 h-5 group-hover:animate-bounce" /> 立即下载
-          </button>
+          <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <button @click="triggerLatestDownload" class="flex-1 sm:flex-none px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white rounded-2xl text-base font-bold transition-all shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group transform hover:-translate-y-0.5 active:scale-95">
+              <Download class="w-5 h-5 group-hover:animate-bounce" /> 立即下载
+            </button>
+            <button @click="handleShare" class="px-6 py-4 bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 rounded-2xl text-base font-bold transition-all shadow-sm flex items-center justify-center gap-2 group transform hover:-translate-y-0.5 active:scale-95" title="点击分享此软件">
+              <Share2 class="w-5 h-5 group-hover:rotate-12 transition-transform" /> 分享
+            </button>
+          </div>
           
           <div class="flex items-center gap-6 text-sm text-slate-400 font-medium pt-1">
             <span class="flex items-center gap-1.5 cursor-default hover:text-slate-600 transition-colors">
@@ -151,11 +156,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { 
   ArrowLeft, Loader2, Package, Download, 
-  ExternalLink, Clock, ShieldCheck, Monitor 
+  ExternalLink, Clock, ShieldCheck, Monitor,
+  Share2
 } from 'lucide-vue-next'
 import http from '../../api/http'
 import SoftwareIcon from '../../components/common/SoftwareIcon.vue'
@@ -164,6 +170,11 @@ const route = useRoute()
 const software = ref<any>(null)
 const versions = ref<any[]>([])
 const loading = ref(true)
+
+/// 判断当前是否为分享模式
+const isShareMode = computed(() => {
+  return route.path.startsWith('/s/')
+})
 
 const fetchData = async () => {
   try {
@@ -201,6 +212,19 @@ const triggerDownload = (ver: any) => {
   // 乐观更新 UI
   ver.downloadCount++
   if (software.value) software.value.totalDownloads++
+}
+
+/// 处理分享逻辑
+const handleShare = async () => {
+  try {
+    const shareUrl = `${window.location.origin}/s/${route.params.id}`
+    await navigator.clipboard.writeText(shareUrl)
+    // 简单的反馈，这里也可以换成 message 组件
+    alert('分享链接已复制到剪贴板！\n' + shareUrl)
+  } catch (err) {
+    console.error('Failed to copy share link', err)
+    alert('复制分享链接失败，请手动复制当前地址。')
+  }
 }
 
 </script>
