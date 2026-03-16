@@ -115,4 +115,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// 配置前端静态资源托管 (供正式部署使用)
+app.UseStaticFiles(); 
+
+// 处理 Vue 路由回退 (Vue Router History Mode)
+app.MapFallbackToFile("index.html");
+
 app.Run();
