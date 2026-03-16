@@ -81,6 +81,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(optio
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+// 默认情况下 AddControllers 映射了 API，后续添加 Fallback 即可
 
 var app = builder.Build();
 

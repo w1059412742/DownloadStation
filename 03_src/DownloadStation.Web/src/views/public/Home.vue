@@ -128,7 +128,7 @@
           v-for="sw in softwares" 
           :key="sw.id" 
           @click="$router.push(`/software/${sw.id}`)"
-          class="group bg-card rounded-xl border border-border px-3.5 py-3 cursor-pointer flex flex-col transition-all duration-300 hover:shadow-card-hover hover:border-primary/40 hover:-translate-y-0.5 aspect-[6/7]"
+          class="group bg-card rounded-xl border border-border px-3.5 py-3 cursor-pointer flex flex-col transition-all duration-300 hover:shadow-card-hover hover:border-primary/40 hover:-translate-y-0.5 aspect-[6/6]"
         >
           <!-- Header -->
           <div class="flex items-center gap-3 mb-2.5 shrink-0">

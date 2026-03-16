@@ -1,0 +1,54 @@
+# ========== 阶段 1: 前端构建 ==========
+FROM node:20-alpine AS build-web
+WORKDIR /app/web
+
+# 复制前端项目定义并安装依赖
+COPY DownloadStation.Web/package*.json ./
+RUN npm install
+
+# 复制前端源码并构建
+COPY DownloadStation.Web/ ./
+RUN npm run build
+
+# ========== 阶段 2: 后端构建 ==========
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-server
+WORKDIR /src
+
+# 复制后端项目定义并还原
+COPY ["DownloadStation.Server/DownloadStation.Server.csproj", "DownloadStation.Server/"]
+RUN dotnet restore "DownloadStation.Server/DownloadStation.Server.csproj"
+
+# 复制后端源码
+COPY DownloadStation.Server/ DownloadStation.Server/
+# 同时复制 SLN 文件如果需要
+COPY DownloadStation.sln ./
+
+# 发布后端
+WORKDIR "/src/DownloadStation.Server"
+RUN dotnet publish "DownloadStation.Server.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# ========== 阶段 3: 最终运行镜像 ==========
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+
+# 从构建阶段复制后端产物
+COPY --from=build-server /app/publish .
+
+# 从构建阶段复制前端产物到 wwwroot 目录 (供 backend 托管)
+COPY --from=build-web /app/web/dist ./wwwroot
+
+# 创建必要的持久化目录挂载点
+RUN mkdir -p /app/data && mkdir -p /data/software
+
+# 设置默认环境变量
+ENV ASPNETCORE_URLS=http://+:8080
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ConnectionStrings__DefaultConnection="Data Source=/app/data/downloadstation.db"
+ENV AppSettings__UploadBasePath="/app/data/uploads"
+ENV AppSettings__StorageBasePath="/data/software"
+ENV Serilog__WriteTo__1__Args__path="/app/data/logs/log-.txt"
+
+# 暴露端口 (内部 8080, 外部由 compose 映射为 20000)
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "DownloadStation.Server.dll"]
