@@ -21,7 +21,6 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md'
 })
 
-const apiUrl = ''
 const hasError = ref(false)
 
 // 当 iconPath 改变时重置错误状态
