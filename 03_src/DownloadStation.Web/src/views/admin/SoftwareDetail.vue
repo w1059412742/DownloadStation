@@ -452,6 +452,7 @@ const save = async () => {
 
         try {
           await http.post('/api/admin/versions/upload', formData, {
+            timeout: 0, // 上传安装包不限制超时
             onUploadProgress: (progressEvent) => {
               if (progressEvent.total) {
                 uploadProgress.value = Math.round((progressEvent.loaded * 100) / progressEvent.total)
@@ -562,6 +563,7 @@ const handleUpload = async () => {
       formData.append('changelog', uploadForm.changelog)
 
       const res = await http.post('/api/admin/versions/upload', formData, {
+        timeout: 0, // 上传安装包不限制超时
         onUploadProgress: (progressEvent) => {
           if (progressEvent.total) {
             uploadProgress.value = Math.round((progressEvent.loaded * 100) / progressEvent.total)

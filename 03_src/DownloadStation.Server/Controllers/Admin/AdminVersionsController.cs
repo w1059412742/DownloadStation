@@ -26,7 +26,7 @@ namespace DownloadStation.Server.Controllers.Admin
         }
 
         [HttpPost("upload")]
-        [RequestSizeLimit(1073741824)] // 限制 1GB
+        [DisableRequestSizeLimit] // 取消上传大小限制
         public async Task<IActionResult> Upload(
             [FromForm] string softwareId, 
             [FromForm] string versionNumber, 

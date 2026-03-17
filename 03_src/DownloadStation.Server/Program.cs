@@ -75,7 +75,7 @@ builder.Services.AddHostedService<DownloadStation.Server.BackgroundServices.Hash
 
 builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 1073741824; // 1GB
+    options.MultipartBodyLengthLimit = 107374182400; // 100GB
 });
 
 builder.Services.AddControllers();

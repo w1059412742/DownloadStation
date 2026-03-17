@@ -150,7 +150,7 @@
     <!-- Platform Modal -->
     <div v-if="showPlatformModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showPlatformModal = false"></div>
-      <div class="relative bg-surface w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-fade-in-up">
+      <div class="relative bg-surface w-full max-w-md rounded-2xl shadow-xl animate-fade-in-up">
         <div class="px-6 py-4 border-b border-border flex justify-between items-center bg-black/5">
           <h3 class="font-bold text-textPrimary">{{ isEditingPlatform ? '编辑平台' : '新增平台' }}</h3>
           <button @click="showPlatformModal = false" class="text-textHint hover:text-textPrimary transition-colors">
@@ -171,19 +171,21 @@
               <label class="block text-xs font-bold text-textSecondary uppercase mb-1.5">主题色</label>
               <div class="relative group/color">
                 <div @click="showColorPicker = !showColorPicker" class="w-full px-4 py-2 pl-10 bg-black/5 border border-border rounded-xl cursor-pointer flex items-center justify-between text-textPrimary hover:bg-black/10 transition-colors">
-                  <span>{{ colorOptions.find(o => o.value === platformForm.colorHex)?.label || '选择颜色' }}</span>
+                  <span class="truncate">{{ colorOptions.find(o => o.value === platformForm.colorHex)?.label || '选择颜色' }}</span>
                   <div class="absolute left-3 top-2.5 w-4 h-4 rounded-full border border-border transition-transform group-hover/color:scale-110" :style="{ backgroundColor: platformForm.colorHex }"></div>
                   <X v-if="showColorPicker" class="w-3.5 h-3.5 text-textHint" />
                   <div v-else class="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[5px] border-t-textHint"></div>
                 </div>
                 
-                <div v-if="showColorPicker" class="absolute z-[60] left-0 right-0 mt-2 p-2 bg-surface border border-border rounded-2xl shadow-xl animate-fade-in-up">
-                  <div v-for="opt in colorOptions" :key="opt.value" 
-                       @click="platformForm.colorHex = opt.value; showColorPicker = false"
-                       class="flex items-center space-x-3 px-3 py-2 rounded-xl hover:bg-black/5 cursor-pointer transition-colors group/item">
-                    <div class="w-4 h-4 rounded-full border border-border group-hover/item:scale-110 transition-transform" :style="{ backgroundColor: opt.value }"></div>
-                    <span class="text-sm text-textPrimary">{{ opt.label }}</span>
-                    <span class="text-[10px] text-textHint font-mono ml-auto opacity-0 group-hover/item:opacity-100">{{ opt.value }}</span>
+                <div v-if="showColorPicker" class="absolute z-[60] left-0 right-0 mt-2 p-3 bg-surface border border-border rounded-2xl shadow-2xl animate-fade-in-up">
+                  <div class="grid grid-cols-5 gap-2 max-h-[220px] overflow-y-auto pr-1">
+                    <div v-for="opt in colorOptions" :key="opt.value" 
+                         @click="platformForm.colorHex = opt.value; showColorPicker = false"
+                         class="aspect-square rounded-full border border-border flex items-center justify-center cursor-pointer hover:scale-110 transition-all group/item shadow-sm"
+                         :style="{ backgroundColor: opt.value }"
+                         :title="opt.label">
+                       <div v-if="platformForm.colorHex === opt.value" class="w-1.5 h-1.5 rounded-full bg-white shadow-sm ring-1 ring-black/10"></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -226,7 +228,19 @@ const colorOptions = [
   { value: '#6B7280', label: '石板灰' },
   { value: '#3B82F6', label: '亮湛蓝' },
   { value: '#EC4899', label: '魅惑粉' },
-  { value: '#000000', label: '深邃黑' }
+  { value: '#000000', label: '深邃黑' },
+  { value: '#F97316', label: '活力橙' },
+  { value: '#06B6D4', label: '靛蓝' },
+  { value: '#FACC15', label: '柠檬黄' },
+  { value: '#4ADE80', label: '薄荷绿' },
+  { value: '#F87171', label: '浅珊瑚' },
+  { value: '#6366F1', label: '靛青' },
+  { value: '#A855F7', label: '薰衣草' },
+  { value: '#14B8A6', label: '松石绿' },
+  { value: '#D946EF', label: '粉紫' },
+  { value: '#FB923C', label: '夕阳橙' },
+  { value: '#475569', label: '冷灰' },
+  { value: '#B45309', label: '焦糖色' }
 ]
 
 const fetchCategories = async () => {
