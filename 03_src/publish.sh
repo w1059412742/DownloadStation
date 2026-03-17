@@ -7,6 +7,13 @@
 REGISTRY="dockerhub.heitang.top:8443"
 IMAGE_NAME="softstation"
 
+#拉代码
+git reset --hard HEAD
+git pull
+
+ch *
+
+
 # 1. 获取动态版本号
 read -p "请输入发布版本号 (例如 1.0.1): " VERSION
 
