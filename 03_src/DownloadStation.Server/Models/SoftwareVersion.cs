@@ -64,6 +64,11 @@ namespace DownloadStation.Server.Models
         public int IsVisible { get; set; } = 1;
 
         /// <summary>
+        /// 是否作为详情页主下载按钮默认指向的版本。每个软件最多一个默认版本。
+        /// </summary>
+        public int IsDefault { get; set; } = 0;
+
+        /// <summary>
         /// 往往作为最新的发布时序基准向。
         /// </summary>
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

@@ -87,6 +87,10 @@
         </div>
       </section>
 
+      <section class="bg-slate-50/80 rounded-2xl border border-slate-100 px-6 py-4 text-sm leading-6 text-slate-500">
+        免责声明：本站仅作为个人资料归档与网络资源索引使用，页面中涉及的软件名称、商标及版权均归原作者或权利方所有。本站资源仅供学习、研究与备份参考，请在具备合法授权的前提下下载和使用；如未获得相应授权，请在下载后 24 小时内删除，勿用于商业或违法用途。本站不对第三方安装包的完整性、安全性、适用性及后续使用结果作任何承诺，下载、安装与使用风险由用户自行承担。若权利方认为本站内容侵犯了合法权益，请提供权属证明及相关链接，本站核实后将及时下架或删除。
+      </section>
+
       <!-- 3. 历史版本列表 - 紧凑且功能完善 -->
       <section id="versions-area" class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
         <div class="p-8 sm:p-10">
@@ -183,10 +187,10 @@ const fetchData = async () => {
 
     const versionRes = await http.get(`/api/softwares/${route.params.id}/versions`)
     if (versionRes.data.code === 200) {
-      // 按照版本创建时间倒序排列，确保最新版本在前
-      versions.value = versionRes.data.data.sort((a: any, b: any) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )
+      versions.value = versionRes.data.data.sort((a: any, b: any) => {
+        if ((b.isDefault || 0) !== (a.isDefault || 0)) return (b.isDefault || 0) - (a.isDefault || 0)
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      })
     }
   } catch (err) {
     console.error('Failed to load detail', err)
@@ -200,8 +204,9 @@ onMounted(() => {
 })
 
 const triggerLatestDownload = () => {
-  if (versions.value.length > 0) {
-    triggerDownload(versions.value[0])
+  const targetVersion = versions.value.find(ver => ver.isDefault === 1) || versions.value[0]
+  if (targetVersion) {
+    triggerDownload(targetVersion)
   }
 }
 

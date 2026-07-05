@@ -208,7 +208,8 @@ const filters = ref({
   pageSize: 15,
   keyword: '',
   categoryId: '',
-  platformId: ''
+  platformId: '',
+  sortBy: 'popular'
 })
 
 const platforms = ref<any[]>([])

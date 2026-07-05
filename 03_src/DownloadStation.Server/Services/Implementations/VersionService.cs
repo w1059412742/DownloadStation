@@ -36,7 +36,8 @@ namespace DownloadStation.Server.Services.Implementations
             }
 
             var versions = await query
-                .OrderByDescending(v => v.CreatedAt) // 默认时间倒序展示
+                .OrderByDescending(v => v.IsDefault)
+                .ThenByDescending(v => v.CreatedAt)
                 .ToListAsync();
 
             return versions.Select(MapToResponse).ToList();
@@ -61,6 +62,9 @@ namespace DownloadStation.Server.Services.Implementations
                fileSize = new FileInfo(request.FilePath).Length;
             }
 
+            var hasDefaultVersion = await _context.SoftwareVersions
+                .AnyAsync(v => v.SoftwareId == request.SoftwareId && v.IsVisible == 1 && v.IsDefault == 1);
+
             var version = new SoftwareVersion
             {
                 SoftwareId = request.SoftwareId,
@@ -71,6 +75,7 @@ namespace DownloadStation.Server.Services.Implementations
                 FileSize = fileSize,
                 HashStatus = HashStatus.Pending, // 压入计算队列待处理
                 IsVisible = 1,
+                IsDefault = hasDefaultVersion ? 0 : 1,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -108,6 +113,9 @@ namespace DownloadStation.Server.Services.Implementations
                 await file.CopyToAsync(stream);
             }
 
+            var hasDefaultVersion = await _context.SoftwareVersions
+                .AnyAsync(v => v.SoftwareId == softwareId && v.IsVisible == 1 && v.IsDefault == 1);
+
             var version = new SoftwareVersion
             {
                 SoftwareId = softwareId,
@@ -118,6 +126,7 @@ namespace DownloadStation.Server.Services.Implementations
                 FileSize = file.Length,
                 HashStatus = HashStatus.Pending,
                 IsVisible = 1,
+                IsDefault = hasDefaultVersion ? 0 : 1,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -160,8 +169,20 @@ namespace DownloadStation.Server.Services.Implementations
                 }
             }
 
+            var softwareId = version.SoftwareId;
+            var wasDefault = version.IsDefault == 1;
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
             _context.SoftwareVersions.Remove(version);
             await _context.SaveChangesAsync();
+
+            if (wasDefault)
+            {
+                await PromoteLatestVisibleVersionAsync(softwareId);
+                await _context.SaveChangesAsync();
+            }
+
+            await transaction.CommitAsync();
             return true;
         }
 
@@ -170,11 +191,55 @@ namespace DownloadStation.Server.Services.Implementations
             var version = await _context.SoftwareVersions.FindAsync(id);
             if (version == null) return false;
 
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            var wasDefault = version.IsDefault == 1;
+
             version.IsVisible = isVisible;
+            if (isVisible != 1 && wasDefault)
+            {
+                version.IsDefault = 0;
+            }
             version.UpdatedAt = DateTime.UtcNow;
 
             _context.SoftwareVersions.Update(version);
             await _context.SaveChangesAsync();
+
+            if (isVisible != 1 && wasDefault)
+            {
+                await PromoteLatestVisibleVersionAsync(version.SoftwareId);
+                await _context.SaveChangesAsync();
+            }
+            else if (isVisible == 1 && !await HasVisibleDefaultVersionAsync(version.SoftwareId))
+            {
+                version.IsDefault = 1;
+                version.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
+
+            await transaction.CommitAsync();
+            return true;
+        }
+
+        public async Task<bool> SetDefaultAsync(string id)
+        {
+            var version = await _context.SoftwareVersions.FindAsync(id);
+            if (version == null) return false;
+            if (version.IsVisible != 1) throw new InvalidOperationException("隐藏版本不能设为默认下载版本。");
+            if (version.IsDefault == 1) return true;
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
+            await _context.SoftwareVersions
+                .Where(v => v.SoftwareId == version.SoftwareId && v.IsDefault == 1)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(v => v.IsDefault, 0)
+                    .SetProperty(v => v.UpdatedAt, DateTime.UtcNow));
+
+            version.IsDefault = 1;
+            version.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            await transaction.CommitAsync();
             return true;
         }
 
@@ -195,6 +260,26 @@ namespace DownloadStation.Server.Services.Implementations
             await _context.SaveChangesAsync();
         }
 
+        private async Task<bool> HasVisibleDefaultVersionAsync(string softwareId)
+        {
+            return await _context.SoftwareVersions
+                .AnyAsync(v => v.SoftwareId == softwareId && v.IsVisible == 1 && v.IsDefault == 1);
+        }
+
+        private async Task PromoteLatestVisibleVersionAsync(string softwareId, string? excludedVersionId = null)
+        {
+            var replacement = await _context.SoftwareVersions
+                .Where(v => v.SoftwareId == softwareId && v.IsVisible == 1 && v.Id != excludedVersionId)
+                .OrderByDescending(v => v.CreatedAt)
+                .FirstOrDefaultAsync();
+
+            if (replacement != null)
+            {
+                replacement.IsDefault = 1;
+                replacement.UpdatedAt = DateTime.UtcNow;
+            }
+        }
+
         private static VersionResponse MapToResponse(SoftwareVersion version)
         {
             return new VersionResponse
@@ -210,6 +295,7 @@ namespace DownloadStation.Server.Services.Implementations
                 HashStatus = version.HashStatus,
                 DownloadCount = version.DownloadCount,
                 IsVisible = version.IsVisible,
+                IsDefault = version.IsDefault,
                 CreatedAt = version.CreatedAt,
                 UpdatedAt = version.UpdatedAt
             };

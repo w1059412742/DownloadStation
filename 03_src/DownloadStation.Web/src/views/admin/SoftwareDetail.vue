@@ -88,10 +88,12 @@
                  <div class="flex-1 min-w-0 pr-4">
                     <div class="flex items-center space-x-2">
                        <h4 class="font-bold text-sm text-textPrimary font-mono">v{{ ver.versionNumber }}</h4>
+                       <span v-if="ver.isDefault === 1" class="px-1.5 py-0.5 rounded text-[10px] bg-primary/10 text-primary">默认</span>
                        <span v-if="ver.isVisible === 1" class="px-1.5 py-0.5 rounded text-[10px] bg-success/10 text-success">可见</span>
                        <span v-else class="px-1.5 py-0.5 rounded text-[10px] bg-textHint/10 text-textSecondary">隐藏</span>
                     </div>
                     <p class="text-xs text-textSecondary mt-1 line-clamp-1" :title="ver.fileName">{{ ver.fileName }}</p>
+                    <p v-if="ver.changelog" class="text-xs text-textHint mt-1 line-clamp-2" :title="ver.changelog">{{ ver.changelog }}</p>
                  </div>
                  <div class="flex items-center space-x-2 text-xs flex-shrink-0 mr-4">
                     <span v-if="ver.hashStatus === 2" class="text-success flex items-center"><ShieldCheck class="w-3 h-3 mr-1" />校验完毕</span>
@@ -99,6 +101,7 @@
                     <span v-else class="text-textHint flex items-center"><Clock class="w-3 h-3 mr-1" />等待中</span>
                  </div>
                  <div class="opacity-0 group-hover:opacity-100 transition-opacity flex space-x-1 flex-shrink-0">
+                    <button v-if="ver.isVisible === 1 && ver.isDefault !== 1" @click="setDefaultVersion(ver)" class="p-1.5 text-textHint hover:text-primary rounded-lg transition-colors" title="设为默认"><Terminal class="w-4 h-4" /></button>
                     <button @click="toggleVersionVisibility(ver)" class="p-1.5 text-textHint hover:text-primary rounded-lg transition-colors" :title="ver.isVisible === 1 ? '隐藏' : '显示'"><Eye class="w-4 h-4" v-if="ver.isVisible !== 1"/><EyeOff class="w-4 h-4" v-else /></button>
                     <button @click="openEditVersion(ver)" class="p-1.5 text-textHint hover:text-primary rounded-lg transition-colors" title="编辑"><Edit2 class="w-4 h-4" /></button>
                     <button @click="deleteVersion(ver.id)" class="p-1.5 text-textHint hover:text-danger rounded-lg transition-colors" title="删除"><Trash class="w-4 h-4" /></button>
@@ -213,10 +216,14 @@
                 </div>
                 <div v-if="uploadMode === 'upload'">
                   <label class="block text-[10px] font-bold text-textHint uppercase mb-1">安装包文件</label>
-                  <label class="flex items-center justify-center px-3 py-2 bg-black/5 hover:bg-black/10 rounded-lg cursor-pointer transition-colors border border-dashed border-border group">
+                  <label
+                    class="flex items-center justify-center px-3 py-2 bg-black/5 hover:bg-black/10 rounded-lg cursor-pointer transition-colors border border-dashed border-border group"
+                    @dragover.prevent
+                    @drop.prevent="onFileDrop"
+                  >
                     <input type="file" class="sr-only" @change="onFileChange" />
                     <Paperclip v-if="!uploadFile" class="w-4 h-4 text-textHint group-hover:text-primary transition-colors" />
-                    <span class="text-xs text-textSecondary truncate max-w-[80px] ml-1">{{ uploadFile ? uploadFile.name : '选择文件' }}</span>
+                    <span class="text-xs text-textSecondary truncate max-w-[120px] ml-1">{{ uploadFile ? uploadFile.name : '选择或拖入文件' }}</span>
                   </label>
                 </div>
                 <div v-else>
@@ -394,7 +401,10 @@ const fetchData = async () => {
 const loadVersions = async () => {
    const verRes = await http.get(`/api/admin/versions/software/${route.params.id}`)
    if (verRes.data.code === 200) {
-      versions.value = verRes.data.data
+      versions.value = verRes.data.data.sort((a: any, b: any) => {
+        if ((b.isDefault || 0) !== (a.isDefault || 0)) return (b.isDefault || 0) - (a.isDefault || 0)
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      })
    }
 }
 
@@ -542,8 +552,25 @@ const toggleVersionVisibility = async (ver: any) => {
     }
 }
 
+const setDefaultVersion = async (ver: any) => {
+    if (ver.isVisible !== 1) return alert('隐藏版本不能设为默认下载版本')
+    try {
+        const res = await http.patch(`/api/admin/versions/${ver.id}/default`)
+        if (res.data.code === 200) {
+            await loadVersions()
+        }
+    } catch (error: any) {
+        alert(error.response?.data?.message || '设置默认版本失败')
+    }
+}
+
 const onFileChange = (e: any) => {
   const file = e.target.files[0]
+  if (file) uploadFile.value = file
+}
+
+const onFileDrop = (e: DragEvent) => {
+  const file = e.dataTransfer?.files?.[0]
   if (file) uploadFile.value = file
 }
 

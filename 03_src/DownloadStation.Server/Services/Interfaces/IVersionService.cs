@@ -21,6 +21,8 @@ namespace DownloadStation.Server.Services.Interfaces
 
         Task<bool> ChangeVisibilityAsync(string id, int isVisible);
 
+        Task<bool> SetDefaultAsync(string id);
+
         Task IncrementDownloadAsync(string id);
     }
 }

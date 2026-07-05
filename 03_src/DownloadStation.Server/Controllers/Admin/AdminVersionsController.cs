@@ -76,5 +76,15 @@ namespace DownloadStation.Server.Controllers.Admin
 
             return Ok(Dtos.Responses.ApiResponse<object?>.Success(null, "可见性切换成功。"));
         }
+
+        [HttpPatch("{id}/default")]
+        public async Task<IActionResult> SetDefault(string id)
+        {
+            var success = await _versionService.SetDefaultAsync(id);
+            if (!success)
+                return NotFound(Dtos.Responses.ApiResponse<object>.Fail(404, "版本记录不存在。"));
+
+            return Ok(Dtos.Responses.ApiResponse<object?>.Success(null, "默认下载版本设置成功。"));
+        }
     }
 }

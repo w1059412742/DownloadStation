@@ -122,6 +122,9 @@
               </td>
               <td class="px-6 py-4 text-right">
                 <div class="flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button @click="previewSoftware(item.id)" class="p-1.5 bg-surface border border-border text-textSecondary hover:text-primary hover:border-primary/50 rounded-lg transition-colors" title="预览">
+                    <ExternalLink class="w-4 h-4" />
+                  </button>
                   <button @click="$router.push(`/admin/softwares/${item.id}`)" class="p-1.5 bg-surface border border-border text-textSecondary hover:text-primary hover:border-primary/50 rounded-lg transition-colors" title="编辑">
                     <Edit2 class="w-4 h-4" />
                   </button>
@@ -153,7 +156,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { Box, Plus, Search, Loader2, Edit2, Eye, EyeOff, Trash2 } from 'lucide-vue-next'
+import { Box, Plus, Search, Loader2, Edit2, Eye, EyeOff, Trash2, ExternalLink } from 'lucide-vue-next'
 import http from '../../api/http'
 import SoftwareIcon from '../../components/common/SoftwareIcon.vue'
 
@@ -203,6 +206,10 @@ const fetchData = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const previewSoftware = (id: string) => {
+  window.open(`/software/${id}`, '_blank')
 }
 
 const toggleStatus = async (item: any) => {

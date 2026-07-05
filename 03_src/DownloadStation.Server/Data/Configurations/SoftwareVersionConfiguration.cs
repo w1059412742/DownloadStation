@@ -22,6 +22,9 @@ namespace DownloadStation.Server.Data.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasIndex(sv => new { sv.SoftwareId, sv.CreatedAt }).IsDescending();
+            builder.HasIndex(sv => sv.SoftwareId)
+                .HasFilter("\"IsDefault\" = 1")
+                .IsUnique();
             builder.HasIndex(sv => sv.IsVisible);
         }
     }

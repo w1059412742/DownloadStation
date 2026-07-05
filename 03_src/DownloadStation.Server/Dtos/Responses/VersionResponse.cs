@@ -16,6 +16,7 @@ namespace DownloadStation.Server.Dtos.Responses
         public HashStatus HashStatus { get; set; }
         public int DownloadCount { get; set; }
         public int IsVisible { get; set; }
+        public int IsDefault { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
