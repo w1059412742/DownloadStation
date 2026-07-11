@@ -62,9 +62,7 @@ namespace DownloadStation.Server.Services.Implementations
                fileSize = new FileInfo(request.FilePath).Length;
             }
 
-            var hasDefaultVersion = await _context.SoftwareVersions
-                .AnyAsync(v => v.SoftwareId == request.SoftwareId && v.IsVisible == 1 && v.IsDefault == 1);
-
+            var now = DateTime.UtcNow;
             var version = new SoftwareVersion
             {
                 SoftwareId = request.SoftwareId,
@@ -75,13 +73,17 @@ namespace DownloadStation.Server.Services.Implementations
                 FileSize = fileSize,
                 HashStatus = HashStatus.Pending, // 压入计算队列待处理
                 IsVisible = 1,
-                IsDefault = hasDefaultVersion ? 0 : 1,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                IsDefault = 1,
+                CreatedAt = now,
+                UpdatedAt = now
             };
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            await ClearDefaultVersionsAsync(request.SoftwareId, now);
 
             _context.SoftwareVersions.Add(version);
             await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
 
             return MapToResponse(version);
         }
@@ -113,9 +115,7 @@ namespace DownloadStation.Server.Services.Implementations
                 await file.CopyToAsync(stream);
             }
 
-            var hasDefaultVersion = await _context.SoftwareVersions
-                .AnyAsync(v => v.SoftwareId == softwareId && v.IsVisible == 1 && v.IsDefault == 1);
-
+            var now = DateTime.UtcNow;
             var version = new SoftwareVersion
             {
                 SoftwareId = softwareId,
@@ -126,13 +126,17 @@ namespace DownloadStation.Server.Services.Implementations
                 FileSize = file.Length,
                 HashStatus = HashStatus.Pending,
                 IsVisible = 1,
-                IsDefault = hasDefaultVersion ? 0 : 1,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                IsDefault = 1,
+                CreatedAt = now,
+                UpdatedAt = now
             };
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            await ClearDefaultVersionsAsync(softwareId, now);
 
             _context.SoftwareVersions.Add(version);
             await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
 
             return MapToResponse(version);
         }
@@ -264,6 +268,15 @@ namespace DownloadStation.Server.Services.Implementations
         {
             return await _context.SoftwareVersions
                 .AnyAsync(v => v.SoftwareId == softwareId && v.IsVisible == 1 && v.IsDefault == 1);
+        }
+
+        private async Task ClearDefaultVersionsAsync(string softwareId, DateTime updatedAt)
+        {
+            await _context.SoftwareVersions
+                .Where(v => v.SoftwareId == softwareId && v.IsDefault == 1)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(v => v.IsDefault, 0)
+                    .SetProperty(v => v.UpdatedAt, updatedAt));
         }
 
         private async Task PromoteLatestVisibleVersionAsync(string softwareId, string? excludedVersionId = null)
