@@ -1,0 +1,7 @@
+[
+  {
+    "exit": 0,
+    "stdout": "",
+    "stderr": "test_acceptance_without_when_is_rejected (__main__.SddGateTests.test_acceptance_without_when_is_rejected) ... ok\r\ntest_approved_without_real_basis_is_rejected (__main__.SddGateTests.test_approved_without_real_basis_is_rejected) ... ok\r\ntest_complete_draft_is_structurally_valid (__main__.SddGateTests.test_complete_draft_is_structurally_valid) ... ok\r\ntest_missing_relative_link_is_rejected (__main__.SddGateTests.test_missing_relative_link_is_rejected) ... ok\r\ntest_multiple_requirements_may_share_acceptance (__main__.SddGateTests.test_multiple_requirements_may_share_acceptance) ... ok\r\ntest_ready_gate_rejects_draft (__main__.SddGateTests.test_ready_gate_rejects_draft) ... ok\r\ntest_requirement_without_acceptance_is_rejected (__main__.SddGateTests.test_requirement_without_acceptance_is_rejected) ... ok\r\ntest_unknown_requirement_reference_is_rejected (__main__.SddGateTests.test_unknown_requirement_reference_is_rejected) ... ok\r\ntest_vague_acceptance_is_rejected (__main__.SddGateTests.test_vague_acceptance_is_rejected) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 9 tests in 0.113s\r\n\r\nOK\r\n"
+  }
+]

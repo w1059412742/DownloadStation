@@ -1,0 +1,598 @@
+{
+  "reviewMode": "现状基线",
+  "reviewDateLocal": "2026-10-02",
+  "timezone": "Asia/Shanghai",
+  "capturedAtUtc": "2026-10-02T16:32:05.032Z",
+  "root": "G:/99_Output/08_codex/02_DownloadStation",
+  "head": "57e28479bda434f1e9f507872ff16c53fcfb1830",
+  "branch": "master_261002_测试",
+  "gitStatus": " M README.md\n?? .planning/\n?? AGENTS.md\n?? docs/\n",
+  "hashAlgorithm": "SHA-256",
+  "scopeNote": "输入清单用于固定本轮审查输入；不代表每个文件均完成逐行语义审查。初步接入文档也纳入输入。",
+  "inputs": [
+    {
+      "path": ".agents/skills/design/SKILL.md",
+      "sha256": "ecc960dc429e090be9c0d7ddcfe7092f0aa41abf6bf8124c96de5f35dadbba58"
+    },
+    {
+      "path": ".agents/skills/prd/SKILL.md",
+      "sha256": "63c0b74415cb11c2a1c40ce2ca2642a6130a26794d77ab6ec3b65e8d5c7ebbb6"
+    },
+    {
+      "path": ".agents/skills/uiux/SKILL.md",
+      "sha256": "8c4ac73e5a96a2fbdae30ab788b4b1e3e7e6a8001d7681f49ff6c10c233d9546"
+    },
+    {
+      "path": ".gitattributes",
+      "sha256": "462475ee5301e77d2a54a64757d95c3f21fc3a79e92e6ec94bdfcc8b36e48964"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "8e9aa3e04debc29c4671966e9002a84b0bb5544c088f330ff4afd88b6519c8ea"
+    },
+    {
+      "path": "01_需求/个人专属软件下载站需求规格说明书 (PRD).docx",
+      "sha256": "3b8f52c25ca572449c292b7ed502bf4326f0c01af93d54d062ddb452ef887d4b"
+    },
+    {
+      "path": "01_需求/个人专属软件下载站需求规格说明书 (PRD).txt",
+      "sha256": "9df33085915d40a68c6e922d33f54b18f3d782f832d97c476ea56e29677d204f"
+    },
+    {
+      "path": "02_设计/前端界面设计规范 (UIUX).docx",
+      "sha256": "aa370fd3b6b5e3a58e1eee6d9a90db6c3c31d10de1643a83ba29848e2c36ba7f"
+    },
+    {
+      "path": "02_设计/前端界面设计规范 (UIUX).txt",
+      "sha256": "2fca1d463c0740afb5878846852f181a024b080124dbd825cc94bdb4e518dc80"
+    },
+    {
+      "path": "03_src/docker-compose.synology.yml",
+      "sha256": "dbbba2f7ecfdd3b57dd9cb13a517934412bfb5bfe8a601eefcf9b5ff4902ded8"
+    },
+    {
+      "path": "03_src/docker-compose.yml",
+      "sha256": "42b98bb0f1a446792da031624852883df8f8e56ecf9ae8a7165a212f76220234"
+    },
+    {
+      "path": "03_src/Dockerfile.Server",
+      "sha256": "447441ef1e4cb037c71dd009ea027528ddcbe4e5796f32c948cd155c0afe1ffb"
+    },
+    {
+      "path": "03_src/Dockerfile.Synology",
+      "sha256": "d8816e8522572364985f98a282b0345c468cc925dacd0f403b9726f5a27fecdf"
+    },
+    {
+      "path": "03_src/Dockerfile.Web",
+      "sha256": "f6f6ae28cd1333374323579856484007d694cb67df1cdf17c0d2e8dfcf451a87"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/.config/dotnet-tools.json",
+      "sha256": "b4a7636fdba9a454490168566561dfce18193e3b33c8651321159f8a45749f8d"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/appsettings.Development.json",
+      "sha256": "73f95f9e0ceb205fc1c4dc50c07697fcfa29d7087868c2aef1d504cb38c771ec"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/appsettings.json",
+      "sha256": "523ee30c0f4ddec0fb82100bf94f9e2617fe31b4834c3277ac7026e7b30f15f5"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/BackgroundServices/HashComputeService.cs",
+      "sha256": "fe88774eafd1193c38d259cd209b6b66184c1402dd677d66513d43f78a2d09e1"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Controllers/Admin/AdminCategoriesController.cs",
+      "sha256": "33a2fb338132fc5a8e39e0fc82223b5599905928849fc1c78b24ffb43be285fa"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Controllers/Admin/AdminDashboardController.cs",
+      "sha256": "1b09fe69fd866b893f03a83b7dbce8d2440e039b298c57b3efdad5e0f7886793"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Controllers/Admin/AdminFilesController.cs",
+      "sha256": "121639a0b2afff4a8719797c804b4ffbf15824915147989a5f81b991baa43ae0"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Controllers/Admin/AdminPlatformsController.cs",
+      "sha256": "264057d7a10649feca5c98606affce51f710330898b4f18fc9f54ff2ba2fa625"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Controllers/Admin/AdminSoftwaresController.cs",
+      "sha256": "fe14bb1372828bc3ab820d1ffa71d4ea180eb726cc7f879ca37bdeddf18b51db"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Controllers/Admin/AdminTagsController.cs",
+      "sha256": "9a9b4be2f0a79201c92642e28cfcbc45011f37a926a74af7ea3d63143ce236b0"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Controllers/Admin/AdminVersionsController.cs",
+      "sha256": "626d41fe78b8a62dc63020b26a508717d1e09c5d4383b337bfc8f1cd943e09ec"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Controllers/Admin/AuthController.cs",
+      "sha256": "0ba8a426468ecaa2f6a0521ac398e451a3a5014df943fca809ad8b7c6dfba02f"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Controllers/Public/CategoriesController.cs",
+      "sha256": "6a9324dbefaef4a730a28375fa07b8e6c36cadff34d6cd25f8dd4e79eefe9995"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Controllers/Public/DownloadController.cs",
+      "sha256": "3298a534e118fd5a8200c738093fd2427a3c0448e91fa83e57c940d99f09a0e8"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Controllers/Public/PlatformsController.cs",
+      "sha256": "0f1cc41bb9c83cc84cad25699b0f8512415c76e6b6e91bdba748e7c04fa1f93c"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Controllers/Public/SoftwaresController.cs",
+      "sha256": "e191259f9968fc71578e176e158540b653c8bbb24b3671706b9262a89d5ee7c3"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Controllers/WeatherForecastController.cs",
+      "sha256": "521a0b664eb2423dd2c791b62e33669c16924a6b1aab1c0804ac90265d0d5c09"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Data/AppDbContext.cs",
+      "sha256": "c58a5760da89a938418e4591c7cbead1cb09dba7f75830a8c85c837d1b591376"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Data/Configurations/CategoryConfiguration.cs",
+      "sha256": "215b86eba7406cc5117419d02d24936289ed6e867fcd4e2af93086ece4aca208"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Data/Configurations/PlatformConfiguration.cs",
+      "sha256": "c6493d76618469158ceb6cb7767606691150224504c39a34bdd2b8928664c1c7"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Data/Configurations/SoftwareConfiguration.cs",
+      "sha256": "7db9fefa3019e8bdec850fedd21ce8333bd383da3dc6598f2824884c2aa5f514"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Data/Configurations/SoftwareScreenshotConfiguration.cs",
+      "sha256": "c7b8ccd17418bcfcff4ea3309ad4b7f3803238e13d47d8df5a46aa8c1171f215"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Data/Configurations/SoftwareVersionConfiguration.cs",
+      "sha256": "009600e660d59a6355d25e4d787f5885582e13c9398fb233d47d8eb715cb6185"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/DownloadStation.Server.csproj",
+      "sha256": "d9462bb9247e3479e7bb410517fb9715ce90c60dd1d0b559f217f1c8b794bf7b"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/DownloadStation.Server.http",
+      "sha256": "8bc36739bc38d98bf32f1e19a49bf0e12d080da6ab8f3ccdee3874cb4d32ba4f"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Requests/CategoryCreateRequest.cs",
+      "sha256": "b70925b4659e09b1f85ec1e6ca3141cb27852a2bdc35352345e936ceb75e74ac"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Requests/CategoryUpdateRequest.cs",
+      "sha256": "5901ed7582bf816162cd2c6c2245dad6691ad2059e035463ae50519d425d0183"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Requests/ChangeStatusRequest.cs",
+      "sha256": "b26bcc9a043cef911d5df123775f1bbbf3b1c51e0012575566fe23ac46889c2e"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Requests/FileBindRequest.cs",
+      "sha256": "bc509334edb66ee7fa24c60499300a9c2e97a781a1a501c2a5fdf9539ee531de"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Requests/LoginRequest.cs",
+      "sha256": "610daf0d3f1cd87689de907aebec7ff9fc8e718883b8e22bdfc75d26e305fe70"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Requests/PlatformCreateRequest.cs",
+      "sha256": "e8a336c93eef77ffd951a1c4cb6a4236fa483bcb201cd5895f437f541bd865e0"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Requests/PlatformUpdateRequest.cs",
+      "sha256": "b3eeaf4a93b3f0825eccc028e4623b470163d337e728505ffadc878febf432da"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Requests/SoftwareCreateRequest.cs",
+      "sha256": "7a81d280d41d666737edc483e90e11744b30e549e0dd1f09d5305e0ae3eba0c8"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Requests/SoftwareUpdateRequest.cs",
+      "sha256": "e72388ee4d01240eb702242a31dc9e454d91160e17c5529f299e5c3eb8b224f6"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Requests/TagRequest.cs",
+      "sha256": "3a98f4b437a67bc2efd07b644d87769a76b0a623c1d8c0f60e108a8abe577a64"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Requests/VersionCreateRequest.cs",
+      "sha256": "025f6295ad44fdad3da1946d99ca4bd341698e816c0b4d2ce41d7370751ff321"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Requests/VersionUpdateRequest.cs",
+      "sha256": "68bd30b23f1b53321d56edf8f3916908da0ab8179696b22a2e01f30b1782249c"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Responses/ApiResponse.cs",
+      "sha256": "1dea13cfb02836c68fab26e48315c88d781379b3d8ba35e562f225832e8a2779"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Responses/CategoryTreeResponse.cs",
+      "sha256": "c032b20c3340b17bc9e38e49efd0c923e2e672a01729f4f96d69aae6256e03c2"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Responses/PagedResult.cs",
+      "sha256": "8d04a4b61895c7009c77e8cd1b5e484a1bef4d78071eea73d426cc017b562553"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Responses/PlatformResponse.cs",
+      "sha256": "1996587ec74132e694e5ab55b36f5c21f573d356f7c7dffb9d1384f27159f3f2"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Responses/SoftwareDetailResponse.cs",
+      "sha256": "2b9da334cd3aef17cd195c625dd25d210bb02d0c31427474ce99719ae1f1b792"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Responses/SoftwareListResponse.cs",
+      "sha256": "172c0ab05777c8384648d58f7eddba266a7b3302acdda72cf33396f76fc751ae"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Responses/TagResponse.cs",
+      "sha256": "e5ae4e0a0600c4904213314fe79a36d8f53d3901f8acff9b0978b2311ebef9d9"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Responses/UnboundFileResponse.cs",
+      "sha256": "b4510e7d9d2ddd831b5497d59950a50c5fcff88b5ca8a6886fbe5001a115158e"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Dtos/Responses/VersionResponse.cs",
+      "sha256": "94da1559aa117117e1ed497ca4aa67356ea6962db68206bad2349a6eb5b18158"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Middleware/ExceptionHandlingMiddleware.cs",
+      "sha256": "ee53d2818b237de0ef997a0a0419d33d15c577cc7af72853dee7a39e6db1a30f"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Migrations/20260309151902_InitialCreate.cs",
+      "sha256": "f0db3795ca346d3f907b2b998196cc3c567a2252dfce539bc31615ec8852d1c2"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Migrations/20260309151902_InitialCreate.Designer.cs",
+      "sha256": "bb9f87fce8a9451e4858b9a34783560e65b53d4f4e0690349d3d5b7152f971db"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Migrations/20260310145630_AddPlatformIdToSoftware.cs",
+      "sha256": "700a5e376fe5003afc323972468e4cacd34f0ef028557bc56ce86083ea875a68"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Migrations/20260310145630_AddPlatformIdToSoftware.Designer.cs",
+      "sha256": "d4e434bafb79deaf2d4791d4b4812987d8fabb697a051232260b40cf0c2fe56d"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Migrations/20260313152542_AddTagSystem.cs",
+      "sha256": "d97031fda2451a816f859ff3aac4794f84e8dbd11fc8ab063a06326c01e9ee1d"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Migrations/20260313152542_AddTagSystem.Designer.cs",
+      "sha256": "c21066c435e7d61e82090a2b2930976e47182334bcac2f1d3c33dd84fcad1d7b"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Migrations/20260704092441_AddDefaultVersionFlag.cs",
+      "sha256": "1e760c0670eb23daae9bbdc1f1c5557c3228c2226b281c453bad72d5d244708a"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Migrations/20260704092441_AddDefaultVersionFlag.Designer.cs",
+      "sha256": "ea3846876cfc12c040d9f0b92de05c5f72c8fd22737ab60b4c5536b726bbe5b2"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Migrations/AppDbContextModelSnapshot.cs",
+      "sha256": "d999c21be296e1684b03cbd95c2aacd87b10c414bf368636b7599f296a53679e"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Models/Category.cs",
+      "sha256": "60e57ba86a5a599eb6a9bbe90d99483740f7c77f209bc55951b6ae6f0c01425c"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Models/Enums/HashStatus.cs",
+      "sha256": "f92f4a16ad1a41b7b72858dcfae71f1e8a174e7cde500f6dec17d531b0311d19"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Models/Enums/SoftwareStatus.cs",
+      "sha256": "3531d2e9ab398e0136b226b2fb18a2cbd468ab3d993c106c472a3d54674171eb"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Models/Platform.cs",
+      "sha256": "acbe27f0cc4f0ae9c709a4537722175b29e54b67ae21235e00df1052c2269327"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Models/Software.cs",
+      "sha256": "9818851126b922b09b0f55bf82a7bec95f3ef1dcb1b9382b7148babcc970476e"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Models/SoftwareScreenshot.cs",
+      "sha256": "3338af40c8a544a037f79a645f077fa2ec1cfe017518f38f83116b8387e245b5"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Models/SoftwareVersion.cs",
+      "sha256": "ced274dc9839a6f59fe6a446fb839dd738cf49232afd65cab0bff9fcd603ba6d"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Models/Tag.cs",
+      "sha256": "84b3361035a9cf114771693f90da76b5c6ad7565a4037e74638838393bbb9b2d"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Program.cs",
+      "sha256": "6b294e0c22a1626a76485a2414fd4b4fdcb1935ca7c7287558cd6f071a482bd8"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Properties/launchSettings.json",
+      "sha256": "85c39073f969dd73492a57207456b2f4523fa50b8054ba0a192762d2a5b516d0"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Implementations/AuthService.cs",
+      "sha256": "98856ccc4e72d2539c40475d8355f137fdb2b67fb74c333661ddb0dc300c9215"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Implementations/CategoryService.cs",
+      "sha256": "79c6ae76d2ebf6d5c184a62e8ae84a2b3d878c822f34a070704f108703b3f331"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Implementations/DashboardService.cs",
+      "sha256": "e60fefbbc8e28eb274dc094f53e9ad083f6a6744543b139b105c3c613ec090df"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Implementations/FileService.cs",
+      "sha256": "9b9a406f9a7c56cda3cc39483d2f718e8004b1369c4c9f23dfe837a2e8fe795a"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Implementations/PlatformService.cs",
+      "sha256": "0010a27da018810fc4ab56cf5261be000fe9157bfd270677530f86e2089e7886"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Implementations/SoftwareService.cs",
+      "sha256": "214b129c181594e5749e2a1274ebf15a5ba902f361262196a1bf6711f23f8b15"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Implementations/TagService.cs",
+      "sha256": "3edefc4cc3e24beaa936e2c85f8060bcff3cc5fd163b9e5299bacb459996a996"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Implementations/VersionService.cs",
+      "sha256": "ff4f996e783d0603353456ba462479f177035166054c48ad3026e02d547e7386"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Interfaces/IAuthService.cs",
+      "sha256": "bd30b50b9cd5d16517a251b6cc8eebf53bdbbcc5bfcf780f7cfb4085cd0e688d"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Interfaces/ICategoryService.cs",
+      "sha256": "77c6e07a349e90006ac25b739239d965ed96a17eeddbdf995858a77ce2c0d337"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Interfaces/IDashboardService.cs",
+      "sha256": "2c23b1b1aa053da3f46284f98abd099cbf1fbe5548e80a013c46f08e8eaa417c"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Interfaces/IFileService.cs",
+      "sha256": "a459862ad3d5c80e729e107ecc147b9146d47c63bb4e71a067cafec57432d8ca"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Interfaces/IPlatformService.cs",
+      "sha256": "e3cf73e7e779ba93808dab0287bef13f76184347f3aa88f0dd49aa502036f24d"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Interfaces/ISoftwareService.cs",
+      "sha256": "d19db3c3a6fd72cde0ab09f2c141fdf16ac5d190896f85da317f78971a7432e2"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Interfaces/ITagService.cs",
+      "sha256": "cf0ebfae4fdb51f186a060961c14f7d201def5310cd7f1b6fc0ac0af18d3ec02"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/Services/Interfaces/IVersionService.cs",
+      "sha256": "4479f695ac9eaeb0f3a2a89788523a6a6b697a525c7f04bcb90a1d16add8cb66"
+    },
+    {
+      "path": "03_src/DownloadStation.Server/WeatherForecast.cs",
+      "sha256": "0608457c4fd2a3e5247d7a7617004da560f25ba3c7b0f0fc797b2256b62557a3"
+    },
+    {
+      "path": "03_src/DownloadStation.sln",
+      "sha256": "7ffcc6dfea2fb87707a83eb1230a22427b0e7218c010bb35d9c76b00deb7d3a8"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/.gitignore",
+      "sha256": "fe718e7babb14f3cbad2d97f08889b9ce5215ed3fe0e43b2b8cfbfb3b9b844e8"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/.vscode/extensions.json",
+      "sha256": "70d56b550e796e3ea92922763ae03037a1a94596fda9d737982c75f6a20e88dd"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/index.html",
+      "sha256": "8fcb26d2b762535aceda027909448bd64f7608357eab427eb90b83226af12216"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/package-lock.json",
+      "sha256": "10951c761dc7d6021bc47fde44ae2de8e3e562ecad74daa3139d8ef079361826"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/package.json",
+      "sha256": "6c259b3b08120ea9b5d44dac3249f469f78c9a37912b74a2339d4c4bd35482da"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/postcss.config.js",
+      "sha256": "190c877db466995bf1482f4a16abd06e04a89ede3119341e2a86ff96e1737b27"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/public/vite.svg",
+      "sha256": "4a748afd443918bb16591c834c401dae33e87861ab5dbad0811c3a3b4a9214fb"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/README.md",
+      "sha256": "7cdf486b009cc44709f0b33e45f2a2007f37e5f46ac98fe2aab46c8129318929"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/api/http.ts",
+      "sha256": "b2c87f4dcb567b205cbc6bc4326557636e6daa491ba4163de066b8822f6db9e9"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/App.vue",
+      "sha256": "073cf48003c804226c148c4394904f5d231d3037e578f133009a986f3690deca"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/assets/vue.svg",
+      "sha256": "5532db34f1c52841881bab8aeca6c3e8d092bd21a689a65f4d8f8cf8041eef9d"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/components/AppHeader.vue",
+      "sha256": "7032e7b55807a6a68fc66b250a61bfdadeafcdba22a769a22ecfa9f05ef715d7"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/components/common/RichEditor.vue",
+      "sha256": "b667f38f07a98416a309b2f520a30a44ab70b7ad08a1ce14b17de08b78590ab3"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/components/common/SoftwareIcon.vue",
+      "sha256": "6681277e15534e05debcbbcb4213acd83d0238c90f9112be2b349e4424559091"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/components/HelloWorld.vue",
+      "sha256": "caf048cc9b9af417e2914391d48ec6632b659c16e007ac72a68b31b2502844b5"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/layouts/AdminLayout.vue",
+      "sha256": "3974f7ff8cf64f33378cb5055447f4ccbccc20c89aec5a57d80b04cd861cb3f3"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/layouts/PublicLayout.vue",
+      "sha256": "8cb92e359c8406b167b089fa07b05a0c689c082b195e13a57127575c191989af"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/main.ts",
+      "sha256": "aca1248835834d2805b56118961620c92ab8908fdece0f427015b47e8a310d61"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/router/index.ts",
+      "sha256": "4b147b592af9e373b6212279861df908deebfb341436d5ad8e0b7db027a95faf"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/style.css",
+      "sha256": "9ede585a5d8e185a178e4d43258df4c7a01d3c39c3a8c2d1e445139f71782cf3"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/views/admin/Categories.vue",
+      "sha256": "db7ac7a65fbd8340932b658196aa910ed623782dbcdeadfcb6393a35872ddda1"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/views/admin/Dashboard.vue",
+      "sha256": "8eeab62ca63d0ca7668d49a6df714ad9cf368726e80814144d38bc5bb06ab613"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/views/admin/Files.vue",
+      "sha256": "9899e28d223f651febf499c945bf045699b15c5bc8d613f656a5a2a1880f3c7e"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/views/admin/SoftwareDetail.vue",
+      "sha256": "17b065afaf2f73d09cc49e3f58daa821cf2c17b1a6e478259bbcd9b0e1c3c613"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/views/admin/Softwares.vue",
+      "sha256": "498cc22a7ff641972f26c5158c46b2df8ad15be47fc654205bdc404a9ea73363"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/views/admin/Tags.vue",
+      "sha256": "55b5c3696c5cec3917b3fefacedcb3c85678826b61e57f2f8b678fc58a9369fc"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/views/auth/Login.vue",
+      "sha256": "a80ec940e3056bdf7d5dd3c05b8bda873ae49e1ede3b6c5e5c77efae32cf1ce8"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/views/public/Home.vue",
+      "sha256": "501b48d5fb0652cb506617782efc79b08ce865c9ae0418aa2bd50c0ca35552b6"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/src/views/public/SoftwareDetail.vue",
+      "sha256": "612e7c2a350a74d8b367a4f0648007a2cc8369bc3656258ca396f748df590ef1"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/tailwind.config.js",
+      "sha256": "0784f2bae695c566a58fce5eb0ea63aa079a1fc58528e222f5cdf8de765b2d3b"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/testDelete.js",
+      "sha256": "8de5f1279fcf9f3d39f22babc124b201d99ea9f7d4cf270d761fe7cfd5fb484c"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/tsconfig.app.json",
+      "sha256": "f3bf5adb2d545eb1f26194fc628539b6667fc40fab0bd6cca0c680038cef5031"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/tsconfig.json",
+      "sha256": "770b4140bbb581e2dfd9ea9946ffc9c75a1d86ba7d2db5f77c83e37cbdf9d808"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/tsconfig.node.json",
+      "sha256": "c3dd0fb522feba3596713f51b95bd53d781d845d24aedbfa2ac093d8b39c5120"
+    },
+    {
+      "path": "03_src/DownloadStation.Web/vite.config.ts",
+      "sha256": "3a185524e38d36f814ff29a5d23fac61b162e9d6ad2288c5500aee9ec3640e17"
+    },
+    {
+      "path": "03_src/publish.ps1",
+      "sha256": "df8adaef9abf4e55ed1fa63157a45cf140711ba6f3fb1fc34572262bc259754e"
+    },
+    {
+      "path": "03_src/publish.sh",
+      "sha256": "97a7e629378a1f08581e2c878fcf15d276c0acaa9efd29860cef008a16eb097d"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "47c8aa5c1b17a184163fa8102e702a952c162ae4c0498ae564eccd2704f0024a"
+    },
+    {
+      "path": "docs/changes/CHG-2026-001-sdd-adoption/change.md",
+      "sha256": "5c160d7dbfdb35bf00c20601bd30fe2c073bee877cb4c07c84ef631d198db556"
+    },
+    {
+      "path": "docs/changes/index.md",
+      "sha256": "8861bdd85d2b517da1f99ffc74bc49a0b6439a077984fa10dff9c7608b5faaeb"
+    },
+    {
+      "path": "docs/contracts/http-api.md",
+      "sha256": "9299eea5dc1a3953561ce7a9e118a6f9d4b0c36e1e585be97d52783366a4bceb"
+    },
+    {
+      "path": "docs/project.md",
+      "sha256": "96f3e75b4e70c8ad50ec47ca8353981df2cc69f5a677bd983278b028e874f313"
+    },
+    {
+      "path": "docs/specs/admin/F-ADM-001-admin-management.md",
+      "sha256": "ec25d42e818a28300f275c9272f508eb8393bd826a792bbae623d07dcd8f3d75"
+    },
+    {
+      "path": "docs/specs/catalog/F-CAT-001-public-catalog.md",
+      "sha256": "db4b0c9db47d85d282d2be90ddad1471979a3498edbed88150b0bc4a001878bc"
+    },
+    {
+      "path": "docs/specs/distribution/F-DST-001-version-distribution.md",
+      "sha256": "a89f183ebda8197baf48815375f7ac7b086a66e260bea356ef6e53c48e124b5b"
+    },
+    {
+      "path": "docs/specs/index.md",
+      "sha256": "79be40fac0b8a67dd74c974359bf53851c574a46a27f48ef82223b971a461ecc"
+    },
+    {
+      "path": "docs/specs/operations/F-OPS-001-docker-deployment.md",
+      "sha256": "2c2dc0166bab9c40eeb29c6ed4e1709c8053f372486266c65f439400a3e34b84"
+    },
+    {
+      "path": "README.md",
+      "sha256": "4606bd02257f772133c0736cb72f73c70c0e38a392ed40772e877f867f4593d5"
+    }
+  ]
+}

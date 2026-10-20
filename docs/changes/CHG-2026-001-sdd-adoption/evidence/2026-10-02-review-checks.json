@@ -1,0 +1,285 @@
+{
+  "stage": "review-recorded",
+  "reviewDateLocal": "2026-10-02",
+  "timezone": "Asia/Shanghai",
+  "mode": "现状基线",
+  "authorization": "需求完整性和 SDD 思想落实审查；仅审查文档与状态更正",
+  "baseline": {
+    "reviewMode": "现状基线",
+    "reviewDateLocal": "2026-10-02",
+    "timezone": "Asia/Shanghai",
+    "capturedAtUtc": "2026-10-02T16:32:05.032Z",
+    "root": "G:/99_Output/08_codex/02_DownloadStation",
+    "head": "57e28479bda434f1e9f507872ff16c53fcfb1830",
+    "branch": "master_261002_测试",
+    "gitStatus": " M README.md\n?? .planning/\n?? AGENTS.md\n?? docs/\n",
+    "hashAlgorithm": "SHA-256",
+    "scopeNote": "输入清单用于固定本轮审查输入；不代表每个文件均完成逐行语义审查。初步接入文档也纳入输入。"
+  },
+  "checks": [
+    {
+      "name": "SDD 结构检查",
+      "command": [
+        "python",
+        "C:/Users/DYJ/.codex/skills/sdd-documentation/scripts/check_sdd.py",
+        "G:/99_Output/08_codex/02_DownloadStation"
+      ],
+      "processExitCode": 0,
+      "stdout": "检查 4 份 Spec、1 份 Change；结构问题 0 个。\r\n结果只说明所支持结构检查；业务语义、批准真实性与测试结果仍须人工/agent核对。\r\n",
+      "stderr": "",
+      "limitation": "结构检查通过不代表语义完整/批准真实性/产品验收"
+    },
+    {
+      "name": "Git 受跟踪差异格式",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "processExitCode": 0,
+      "stdout": "",
+      "stderr": "",
+      "limitation": "未覆盖未跟踪文件；另做本轮输出空白检查"
+    },
+    {
+      "name": "Markdown 相对链接",
+      "method": "移除 fenced code 后遍历简单内联相对链接；decode URI、移除 fragment/query，检查目标存在",
+      "filesChecked": [
+        "README.md",
+        "AGENTS.md",
+        "docs/changes/CHG-2026-001-sdd-adoption/change.md",
+        "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-02-review.md",
+        "docs/changes/index.md",
+        "docs/contracts/http-api.md",
+        "docs/project.md",
+        "docs/specs/admin/F-ADM-001-admin-management.md",
+        "docs/specs/catalog/F-CAT-001-public-catalog.md",
+        "docs/specs/distribution/F-DST-001-version-distribution.md",
+        "docs/specs/index.md",
+        "docs/specs/operations/F-OPS-001-docker-deployment.md",
+        ".planning/sdd-adoption/findings.md",
+        ".planning/sdd-adoption/progress.md",
+        ".planning/sdd-adoption/task_plan.md",
+        ".planning/sdd-adoption/validation.md"
+      ],
+      "relativeLinks": 55,
+      "issues": [],
+      "limitation": "不解析全部 Markdown 语法，不验证行锚点或业务语义"
+    },
+    {
+      "name": "REQ/AC 语义线索",
+      "method": "统计真实 Spec 主文件中 REQ/AC 标题及 AC 标题的显式 REQ 引用，人工核对未决 Then",
+      "specs": 4,
+      "requirements": 27,
+      "acceptance": 13,
+      "requirementsWithoutExplicitAcceptance": [
+        {
+          "id": "REQ-ADM-001-007",
+          "file": "docs/specs/admin/F-ADM-001-admin-management.md"
+        },
+        {
+          "id": "REQ-CAT-001-004",
+          "file": "docs/specs/catalog/F-CAT-001-public-catalog.md"
+        },
+        {
+          "id": "REQ-DST-001-008",
+          "file": "docs/specs/distribution/F-DST-001-version-distribution.md"
+        },
+        {
+          "id": "REQ-OPS-001-004",
+          "file": "docs/specs/operations/F-OPS-001-docker-deployment.md"
+        }
+      ],
+      "unknownRequirementReferences": [],
+      "duplicateRequirementIds": [],
+      "acceptanceWithUnresolvedThen": [
+        {
+          "id": "AC-ADM-001-002",
+          "file": "docs/specs/admin/F-ADM-001-admin-management.md",
+          "thenLines": [
+            "Then 每次操作的响应、数据库关系和公开可见性符合确认规则"
+          ]
+        },
+        {
+          "id": "AC-ADM-001-003",
+          "file": "docs/specs/admin/F-ADM-001-admin-management.md",
+          "thenLines": [
+            "Then 统计值按确认口径计算，排行结果可由数据库记录复核"
+          ]
+        },
+        {
+          "id": "AC-CAT-001-003",
+          "file": "docs/specs/catalog/F-CAT-001-public-catalog.md",
+          "thenLines": [
+            "Then 结果符合负责人确认的后代包含规则，且无关分类不出现"
+          ]
+        },
+        {
+          "id": "AC-DST-001-001",
+          "file": "docs/specs/distribution/F-DST-001-version-distribution.md",
+          "thenLines": [
+            "Then 版本记录保存文件元数据并进入哈希队列；哈希作业完成后状态为 `Done` 且 SHA-256 长度和格式符合确认规则"
+          ]
+        },
+        {
+          "id": "AC-DST-001-003",
+          "file": "docs/specs/distribution/F-DST-001-version-distribution.md",
+          "thenLines": [
+            "Then 响应可读取文件内容和原文件名，并且计数行为符合已确认的一致性规则"
+          ]
+        },
+        {
+          "id": "AC-DST-001-004",
+          "file": "docs/specs/distribution/F-DST-001-version-distribution.md",
+          "thenLines": [
+            "Then 数据库最多保持一个有效默认版本，替代规则符合确认结果"
+          ]
+        },
+        {
+          "id": "AC-OPS-001-002",
+          "file": "docs/specs/operations/F-OPS-001-docker-deployment.md",
+          "thenLines": [
+            "Then 运行日志中不暴露秘密，版本标签可追溯，回滚后数据和迁移状态符合确认规则"
+          ]
+        }
+      ],
+      "implementationReadiness": "不足：仍有需求覆盖和语义缺口，未批准目标"
+    },
+    {
+      "name": "PowerShell 发布脚本只读解析",
+      "command": "System.Management.Automation.Language.Parser.ParseFile(03_src/publish.ps1)",
+      "processExitCode": 0,
+      "parseResult": "FAIL",
+      "parsedScriptExecuted": false,
+      "errorCount": 1,
+      "stdout": "{\r\n  \"executedScript\": false,\r\n  \"errors\": [\r\n    {\r\n      \"line\": 16,\r\n      \"column\": 27,\r\n      \"id\": \"InvalidVariableReferenceWithDrive\",\r\n      \"message\": \"Variable reference is not valid. ':' was not followed by a valid variable name character. Consider using ${} to delimit the name.\",\r\n      \"text\": \"$IMAGE_NAME:\"\r\n    }\r\n  ]\r\n}\r\n",
+      "errors": [
+        {
+          "line": 16,
+          "column": 27,
+          "id": "InvalidVariableReferenceWithDrive",
+          "message": "Variable reference is not valid. ':' was not followed by a valid variable name character. Consider using ${} to delimit the name.",
+          "text": "$IMAGE_NAME:"
+        }
+      ]
+    },
+    {
+      "name": "Docker 命令可用性",
+      "command": null,
+      "available": false,
+      "result": "UNAVAILABLE",
+      "limitation": "未执行 docker 或任何发布操作"
+    },
+    {
+      "name": "本轮输出文件行尾空白",
+      "files": [
+        "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-02-review.md",
+        "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-02-review-checks.json",
+        "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-02-review-inputs.json",
+        "docs/changes/CHG-2026-001-sdd-adoption/change.md",
+        "docs/changes/index.md",
+        ".planning/sdd-adoption/task_plan.md",
+        ".planning/sdd-adoption/progress.md"
+      ],
+      "issues": []
+    },
+    {
+      "name": "审查输入前后 SHA-256",
+      "inputsChecked": 146,
+      "changedInputs": [
+        {
+          "path": "docs/changes/CHG-2026-001-sdd-adoption/change.md",
+          "before": "5c160d7dbfdb35bf00c20601bd30fe2c073bee877cb4c07c84ef631d198db556",
+          "after": "3ee821e3850eb739fdaf6b7c02f4fb59dd98a4b23879bf96ef25b01fcff86606"
+        },
+        {
+          "path": "docs/changes/index.md",
+          "before": "8861bdd85d2b517da1f99ffc74bc49a0b6439a077984fa10dff9c7608b5faaeb",
+          "after": "0cd1c4d905e743fab54d3b6b055b0d1e11ee659f32696352070f93496481b4d7"
+        }
+      ],
+      "readFailures": [],
+      "unexpectedChanges": [],
+      "scopeNote": "本次修改的两个 .planning 文件未纳入原 146 项输入清单；它们在 outputs 列明，保留原历史后追加/标注更正。"
+    },
+    {
+      "name": "旧 PRD/UIUX DOCX 与 TXT 内容核对",
+      "method": "本轮前段已执行 ZIP/XML 读取及非空段落比较，按段落文本检查对应 TXT",
+      "source": "本轮前段检查的结果摘要，非伪造原始命令输出",
+      "prdNonEmptyParagraphs": 62,
+      "uiuxNonEmptyParagraphs": 170,
+      "missingFromTxt": {
+        "prd": 0,
+        "uiux": 0
+      },
+      "limitation": "仅内容承接核对，不检查 Word 视觉格式；UIUX 重复段落不作为独立需求"
+    }
+  ],
+  "notExecuted": [
+    "启动应用",
+    "数据库读取/写入/迁移",
+    "前后端重新构建",
+    "执行发布脚本",
+    "Docker 构建/运行",
+    "镜像推送",
+    "NAS/群晖操作",
+    "生产部署",
+    "恢复演练"
+  ],
+  "reviewConclusion": "需求未完整整理，完整 SDD 接入未完成；本轮审查和记录已形成",
+  "environment": {
+    "os": "Windows",
+    "powershell": "7.6.5",
+    "python": "Python 3.13.2",
+    "node": "v22.12.0",
+    "dockerAvailable": false
+  },
+  "finalGit": {
+    "head": "57e28479bda434f1e9f507872ff16c53fcfb1830",
+    "statusShort": " M README.md\n?? .planning/\n?? AGENTS.md\n?? docs/\n",
+    "diffNameOnlyTracked": "README.md\n",
+    "headUnchanged": true
+  },
+  "outputs": [
+    "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-02-review.md",
+    "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-02-review-checks.json",
+    "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-02-review-inputs.json",
+    "docs/changes/CHG-2026-001-sdd-adoption/change.md",
+    "docs/changes/index.md",
+    ".planning/sdd-adoption/task_plan.md",
+    ".planning/sdd-adoption/progress.md"
+  ],
+  "historicalEvidence": [
+    {
+      "date": "2026-10-02",
+      "source": "docs/changes/CHG-2026-001-sdd-adoption/change.md",
+      "details": "原记录称前后端构建通过并只读查询 SQLite；本轮未重跑，原完整调查结论已更正"
+    }
+  ],
+  "temporaryArtifactCleanup": {
+    "path": "G:\\99_Output\\08_codex\\02_DownloadStation\\%SystemDrive%",
+    "createdAtUtc": "2026-10-02T16:32:05.491Z",
+    "baselineCapturedAtUtc": "2026-10-02T16:32:05.032Z",
+    "baselinePresent": false,
+    "contents": "4 个 Windows Caches 数据库文件；未读取内容",
+    "probableCause": "本轮 pwsh 子进程启动时生成的 Windows 缓存；目录在基线之后 459 ms 创建",
+    "pathValidation": "已核对 realpath 与项目内精确目标，逐层排除符号链接，文件仅在该缓存目录",
+    "cleaned": true
+  },
+  "finalVerification": {
+    "capturedAtUtc": "2026-10-02T16:43:56.451Z",
+    "structureCheck": {
+      "stdout": "检查 4 份 Spec、1 份 Change；结构问题 0 个。\r\n结果只说明所支持结构检查；业务语义、批准真实性与测试结果仍须人工/agent核对。\r\n",
+      "stderr": ""
+    },
+    "trackedDiffCheck": {
+      "stdout": "",
+      "stderr": ""
+    },
+    "gitStatus": " M README.md\n?? .planning/\n?? AGENTS.md\n?? docs/\n",
+    "outputFiles": 7,
+    "reportPlaceholders": 0,
+    "jsonParsed": true,
+    "issues": []
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "capturedDate": "2026-10-02",
+  "timezone": "Asia/Shanghai",
+  "head": "57e28479bda434f1e9f507872ff16c53fcfb1830",
+  "initialInputCount": 157,
+  "finalInputCount": 189,
+  "initialMissing": [
+    "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-03-review-checks.json",
+    "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-03-review-inputs.json",
+    "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-03-review.md"
+  ],
+  "renames": [
+    {
+      "from": "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-03-review-checks.json",
+      "to": "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-02-review-checks.json"
+    },
+    {
+      "from": "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-03-review-inputs.json",
+      "to": "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-02-review-inputs.json"
+    },
+    {
+      "from": "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-03-review.md",
+      "to": "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-02-review.md"
+    }
+  ],
+  "newPaths": [
+    "docs/changes/CHG-2026-006-docker-release-hardening/change.md",
+    "docs/changes/CHG-2026-003-public-experience-completion/change.md",
+    "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-02-review.md",
+    "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-02-review-inputs.json",
+    "docs/changes/CHG-2026-001-sdd-adoption/evidence/2026-10-02-review-checks.json",
+    "docs/changes/CHG-2026-002-sdd-baseline-completion/change.md",
+    "docs/changes/CHG-2026-005-admin-capability-completion/change.md",
+    "docs/changes/CHG-2026-004-distribution-safety-resilience/change.md",
+    ".agents/skills/sdd-bugfix-workflow/SKILL.md",
+    ".agents/skills/sdd-consistency-review/SKILL.md",
+    ".agents/skills/sdd-specification-workflow/SKILL.md",
+    "docs/changes/CHG-2026-002-sdd-baseline-completion/evidence/validator-red.json",
+    "docs/changes/CHG-2026-002-sdd-baseline-completion/evidence/validator-green.json",
+    "docs/changes/CHG-2026-002-sdd-baseline-completion/evidence/validation.md",
+    "docs/changes/CHG-2026-002-sdd-baseline-completion/evidence/requirements-coverage.md",
+    "docs/changes/CHG-2026-002-sdd-baseline-completion/evidence/input-snapshot.json",
+    "docs/changes/CHG-2026-002-sdd-baseline-completion/evidence/final-snapshot.json",
+    ".agents/skills/verification-before-completion/SKILL.md",
+    ".agents/skills/sdd-reverse-engineering-workflow/SKILL.md",
+    ".agents/skills/sdd-documentation/assets/spec.template.md",
+    ".agents/skills/sdd-implementation-workflow/SKILL.md",
+    ".agents/skills/sdd-documentation/assets/spec-index.template.md",
+    ".agents/skills/sdd-documentation/assets/README.template.md",
+    ".agents/skills/sdd-documentation/assets/project.template.md",
+    ".agents/skills/sdd-documentation/assets/change.template.md",
+    ".agents/skills/sdd-documentation/assets/change-index.template.md",
+    ".agents/skills/sdd-documentation/assets/AGENTS.template.md",
+    ".agents/skills/sdd-documentation/assets/adoption-change.template.md",
+    ".agents/skills/sdd-documentation/tests/test_check_sdd.py",
+    ".agents/skills/sdd-documentation/SKILL.md",
+    ".agents/skills/sdd-reverse-engineering-workflow/references/investigation-guide.md",
+    ".agents/skills/test-driven-development/testing-anti-patterns.md",
+    ".agents/skills/test-driven-development/SKILL.md",
+    ".agents/skills/sdd-documentation/scripts/check_sdd.py",
+    ".agents/skills/sdd-documentation/references/document-rules.md"
+  ],
+  "changedExisting": [
+    {
+      "path": "README.md",
+      "before": "4606bd02257f772133c0736cb72f73c70c0e38a392ed40772e877f867f4593d5",
+      "after": "6e6ef11abcbef28f6faa3ba9a0c586d6bd00c5f51f9d278c9d4f85d5e4f899e5"
+    },
+    {
+      "path": "docs/specs/index.md",
+      "before": "79be40fac0b8a67dd74c974359bf53851c574a46a27f48ef82223b971a461ecc",
+      "after": "af3507511dbbf9a2794cf222f86e8c2209b7a4f0099cc14a41182bb875c75010"
+    },
+    {
+      "path": "docs/project.md",
+      "before": "96f3e75b4e70c8ad50ec47ca8353981df2cc69f5a677bd983278b028e874f313",
+      "after": "254731ff2da4696c34558520aeda2d61e6e16eb404124003d77d0ec77a3a9207"
+    },
+    {
+      "path": "docs/specs/operations/F-OPS-001-docker-deployment.md",
+      "before": "2c2dc0166bab9c40eeb29c6ed4e1709c8053f372486266c65f439400a3e34b84",
+      "after": "a0092e3ee5a9064e26466c69815e50a003347445be93d5546035439b37940fe4"
+    },
+    {
+      "path": "AGENTS.md",
+      "before": "47c8aa5c1b17a184163fa8102e702a952c162ae4c0498ae564eccd2704f0024a",
+      "after": "c23d396abf4c1a1e8f81c9062c1ce6b647c0d2696d042bc4d6df72fa0d123199"
+    },
+    {
+      "path": "docs/specs/admin/F-ADM-001-admin-management.md",
+      "before": "ec25d42e818a28300f275c9272f508eb8393bd826a792bbae623d07dcd8f3d75",
+      "after": "8f4eae5a3d90e97817c5ba4c72f41d805e3a7f85cd5a17c62e198544dd2822c3"
+    },
+    {
+      "path": "docs/contracts/http-api.md",
+      "before": "9299eea5dc1a3953561ce7a9e118a6f9d4b0c36e1e585be97d52783366a4bceb",
+      "after": "08178985e3c58978511f59253b814e08f85bb24068228be4d067c429e26c14b8"
+    },
+    {
+      "path": "docs/changes/index.md",
+      "before": "0cd1c4d905e743fab54d3b6b055b0d1e11ee659f32696352070f93496481b4d7",
+      "after": "5de9d72c7db59aa33e9dc1c7941471a72b1b2987a350711bfb34b603d4ee6226"
+    },
+    {
+      "path": "docs/changes/CHG-2026-001-sdd-adoption/change.md",
+      "before": "3ee821e3850eb739fdaf6b7c02f4fb59dd98a4b23879bf96ef25b01fcff86606",
+      "after": "6f7e297afba714a6d937d3d15282ea6cd1fc673f4f76ab378b705f888f8360d5"
+    },
+    {
+      "path": ".planning/sdd-adoption/task_plan.md",
+      "before": "e2cb720ab42bdfcf0fa6f9b41ca966d0475247ac8249f55c0246dba48382fd58",
+      "after": "120029e2478c9342a4644f11a3134af5551e6e84c47ffa408fc8a8df76c8b9a6"
+    },
+    {
+      "path": ".planning/sdd-adoption/progress.md",
+      "before": "f0528025c5c56d5f64402b9b734931df19c974991d8a9b1889c75818756ca3d6",
+      "after": "df98080756c453c43d5103b4f2d224ab9b0a6db4d760c001fc07f88b4ec481ac"
+    },
+    {
+      "path": "docs/specs/catalog/F-CAT-001-public-catalog.md",
+      "before": "db4b0c9db47d85d282d2be90ddad1471979a3498edbed88150b0bc4a001878bc",
+      "after": "44deef2e6908ece4c10c3c2a3a98a900cc6b7a344c8046b33b6709b34c5312a1"
+    },
+    {
+      "path": "docs/specs/distribution/F-DST-001-version-distribution.md",
+      "before": "a89f183ebda8197baf48815375f7ac7b086a66e260bea356ef6e53c48e124b5b",
+      "after": "ae50da5ff7f05b0f10d4657d6c1ac41c141268a59e1490adcb51d00165b48999"
+    }
+  ],
+  "readFailures": [],
+  "unauthorizedChanges": [],
+  "interpretation": "允许修改范围为项目入口、docs、项目内 SDD 技能/验证依赖和 .planning；业务源代码、数据库迁移、Dockerfile、compose、发布脚本和生产数据未修改。"
+}
