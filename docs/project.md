@@ -56,7 +56,7 @@ HTTP 契约的当前可核对来源是 `Controllers/`、`Dtos/Requests/` 和 `Dt
 ## 阶段基线与导航
 
 - [正式维护规格](specs/index.md)：八项能力目标已确认，落实状态分别登记。
-- [当前接入变更](changes/CHG-2026-001-sdd-adoption/change.md)：`verified`，2026-10-21接入v4完成声明范围的接入记录与必需检查；第1批第2轮通过，两项问题已复查关闭，本地提交尚待队长安排。
+- [当前接入变更](changes/CHG-2026-001-sdd-adoption/change.md)：`verified`，2026-10-21接入v4完成声明范围的接入记录与必需检查；第1批第2轮通过，两项问题已复查关闭。接入v5按队长安排完成本地提交及T6收尾，提交哈希见DOWN-1平台回执，未push或合并。
 - [变更索引](changes/index.md)。
 - 旧资料：`01_需求/`、`02_设计/`、`.agents/skills/prd/SKILL.md`、`.agents/skills/design/SKILL.md`。其历史认可适用性尚未确定。
 

@@ -13,4 +13,4 @@
 | F-HSH-001 | [异步SHA256](hash/F-HSH-001-hash.md) | 后台服务、版本数据 | approved，D1 | 正常摘要及缺文件Failed实测；恢复等排除 | 待核对 | [E23、R27/R28、B05](../changes/CHG-2026-001-sdd-adoption/change.md) |
 | F-DSH-001 | [后台概览](dashboard/F-DSH-001-dashboard.md) | 统计API、看板 | approved，D1 | API可调用实测；聚合逐值未实测，版本总数页面展示仍待办 | 待核对 | [E25、R31、B04/B09、BR-001](../changes/CHG-2026-001-sdd-adoption/change.md) |
 
-完整追溯及尚未接入范围见[接入记录](../changes/CHG-2026-001-sdd-adoption/change.md)，该记录现为声明范围的接入`verified`，本地提交尚待队长安排。代码、部署材料和其他分支不会因本表出现目标或接入状态而自动成为已验证实现；生产版本及启用范围仍缺可靠记录，保持待核对。
+完整追溯及尚未接入范围见[接入记录](../changes/CHG-2026-001-sdd-adoption/change.md)，该记录现为声明范围的接入`verified`；接入v5完成T6本地提交及导航收尾，实际提交哈希见DOWN-1平台回执，未push或合并。代码、部署材料和其他分支不会因本表出现目标或接入状态而自动成为已验证实现；生产版本及启用范围仍缺可靠记录，保持待核对。
