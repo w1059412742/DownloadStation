@@ -3,7 +3,7 @@
 ## 目标与当前阶段
 
 本项目是个人软件安装包管理和分发站，包含访客页面、单管理员后台、文件存储与异步 SHA256 计算。
-本轮 DOWN-1 的任务是调查存量工程并建立 SDD 文档。2026-10-20用户已确认采用已核实无例外现状及三项正确业务边界；正式维护目标见[规格导航](specs/index.md)。第1批累计正式审查2轮，BR-001、BR-002的具体复查关闭、首轮“有保留”及原S2等级保留。2026-10-21原审查者已更正第2轮关于文档完整性和接入无阻塞的保证，当前正式接入条件待补查复查，不能沿用原保证宣称交付完整；已知实现偏差未修复。
+2026-10-20用户已确认采用固定快照中已核实无例外现状及三项正确业务边界；正式维护目标见[规格导航](specs/index.md)。八项维护能力的正式接入条件已通过第3轮独立审查，已知实现偏差未修复，本地提交仍待安排。适用输入、审查计数和Git事实见[审后记录](changes/CHG-2026-003-spec-recheck/change.md#审后记录)，本结论不恢复已撤回的旧完整性保证。
 
 调查覆盖、证据、目标来源、例外、未调查内容与后续待办统一维护在[接入记录](changes/CHG-2026-001-sdd-adoption/change.md)，这里不复制能力清单。
 
@@ -22,7 +22,7 @@ SMB 是人工把文件放入存储目录的外部流程，本仓库未见 SMB �
 
 ## 工程事实与契约来源
 
-调查源为 `master@57e28479bda434f1e9f507872ff16c53fcfb1830`，当前任务分支为 `AI-Multica/master-20261020-sdd-adoption`。这不是部署版本声明。
+维护基线源码为 `master@57e28479bda434f1e9f507872ff16c53fcfb1830`；后续文档版本与任务分支在对应 Change 固定。源码版本不是部署版本声明。
 
 后端目标 `net8.0`，EF Core SQLite 和 JWT Bearer 引用 `8.0.13`。前端锁文件解析结果为 Vue `3.5.30`、Vue Router `5.0.3`、Vite `7.3.1`、Axios `1.13.6`、Tiptap Vue `3.20.1`。这些是声明或锁定版本，未验证运行加载版本。
 
@@ -30,20 +30,24 @@ HTTP 契约的当前可核对来源是 `Controllers/`、`Dtos/Requests/` 和 `Dt
 
 `SoftwareStatus` 声明 Draft=0（下架/草稿）、Published=1；`HashStatus` 声明 Pending=0、Computing=1、Done=2、Failed=3。页面中的“已验证”只以 HashStatus=2 为显示条件，不能据此认定安装包安全或产品已验收。安装包软件库为StorageBasePath；图片目录为独立UploadBasePath。
 
-编号领域代号：ACC（访问边界）、CAT（访客浏览）、MET（元数据）、SW（软件档案）、VER（版本）、FIL（软件库）、HSH（哈希）、DSH（看板）。能力、REQ/AC在各主规格唯一维护，证据与例外只在接入记录维护。
+## 编号与术语
+
+能力编号为 `F-中文领域-001`，需求为 `REQ-中文领域-001-001`，验收为 `AC-中文领域-001-001`。领域名称固定为访问控制、软件浏览、基础字典、软件档案、版本管理、软件库、文件校验、后台概览；名称不随文案润色改变。八项能力、REQ/AC在各主规格唯一维护，证据与例外在Change维护；旧英文编号及其同尾号引用经[迁移映射](changes/CHG-2026-003-spec-recheck/change.md#编号迁移映射)定位，不重新分配尾号。
+
+“软件库”指 `AppSettings:StorageBasePath` 指定的安装包目录，图片另存 `UploadBasePath`；“默认版本”是下载优先选择，不保证创建时间最新。“已验证”是现有页面对哈希Done的展示文案，不表示安全检测、实现验收或发布。
 
 ## 开发与验证命令
 
-下表区分工程入口与本轮实际验证。直接启动原目录会写入已跟踪数据库，不能作为本轮无副作用验证；实际隔离构建和探测方法见接入记录。
+下表维护工程命令。前端需Node/npm及项目依赖，后端需.NET 8适用SDK/运行时与依赖；具体锁定版本见上文。直接启动原目录会写入已跟踪数据库；隔离构建与探测的历史方法和结果见[接入记录](changes/CHG-2026-001-sdd-adoption/change.md#实际验证)。
 
 | 用途 | 工作目录 | 命令 | 条件和副作用 |
 | --- | --- | --- | --- |
 | 前端开发 | `03_src/DownloadStation.Web` | `npm run dev` | 需依赖已安装；Vite 监听 5173，代理 `/api` 和 `/uploads` 到 5186 |
 | 前端构建 | 同上 | `npm run build` | 执行 `vue-tsc -b` 和 `vite build`，生成构建文件 |
 | 后端启动 | `03_src/DownloadStation.Server` | `dotnet run` | 需适用运行时和隔离配置；会执行数据库迁移、创建上传目录并启动哈希写库任务 |
-| 文档检查 | 仓库根目录 | `python <sdd-documentation技能目录>/scripts/check_sdd.py .` | 只检查支持的文档结构和引用，不验证业务或认可来源 |
+| 文档检查 | 仓库根目录 | `python <sdd-documentation技能目录>/scripts/check_sdd.py . --adoption` | 正式接入默认结构追加入口检查；只检查支持的文档结构/引用及入口基本正文，不验证业务、认可来源、运行时更新和Git归属 |
 
-本轮环境探测：Windows PowerShell，.NET SDK `9.0.100`、Node `v22.12.0`、npm `10.9.0`、Python `3.13.2`；已安装Microsoft.AspNetCore.App `8.0.11`及Microsoft.NETCore.App `8.0.7/8.0.11`。隔离副本后端Release构建成功，前端`npm run build`成功（首次沙箱esbuild启动EPERM，升级执行权限后成功；Browserslist数据过期提示，未升级依赖）。隔离HTTP探测31项观察完成，临时服务已停止；浏览器交互、NAS和生产未实测。
+历史工具版本、隔离构建输出、31项HTTP/任务观察及未测试范围统一保存在[接入验证记录](changes/CHG-2026-001-sdd-adoption/change.md#实际验证)。历史成功不表示后续文档修订重新构建或复测。
 
 不要把 `testDelete.js` 当作无副作用测试：其代码会尝试登录本地服务并删除查询到的首个软件，且登录地址与当前路由不同。仓库没有已定位到的自动化测试项目或前端 test 脚本。
 
@@ -56,9 +60,10 @@ HTTP 契约的当前可核对来源是 `Controllers/`、`Dtos/Requests/` 和 `Dt
 ## 阶段基线与导航
 
 - [根AGENTS.md项目规则](../AGENTS.md)：项目级执行边界和场景路由位于非自动管理部分，自动区块保留原文；运行时更新及Git交付边界见补查记录。
-- [交付完整性补查](changes/CHG-2026-002-delivery-completeness/change.md)：撤回另名指引方案并同步审查者更正，`implementing`，待独立复查和仅本地提交；不改变D1/D2或业务目标。
+- [当前维护规格复核](changes/CHG-2026-003-spec-recheck/change.md)：中文编号映射、源码/旧资料核对、文档职责整理及第3轮审查来源；接入范围verified，本地提交待安排，不授权产品修复。
+- [交付完整性补查](changes/CHG-2026-002-delivery-completeness/change.md)：保留另名方案撤回、审查者更正和当时证据；当前Git事实及复查输入以新记录为准。
 - [正式维护规格](specs/index.md)：八项能力目标已确认，落实状态分别登记。
-- [当前接入变更](changes/CHG-2026-001-sdd-adoption/change.md)：当前`implementing`，原v4/v5的verified及本地提交保留为历史；第2轮完整性保证已由原审查者撤回，待补查复查，BR两项具体关闭证据保留。实际既有提交哈希见DOWN-1平台回执，未push或合并。
+- [原接入变更](changes/CHG-2026-001-sdd-adoption/change.md)：D1/D2、覆盖、证据、前两轮报告及完整性撤回、历史差距及后续待办；当前依据第3轮独立结论记录适用范围`verified`，不追改历史效力。
 - [变更索引](changes/index.md)。
 - 旧资料：`01_需求/`、`02_设计/`、`.agents/skills/prd/SKILL.md`、`.agents/skills/design/SKILL.md`。其历史认可适用性尚未确定。
 
