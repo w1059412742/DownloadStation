@@ -1,0 +1,30 @@
+{
+  "savedAt": "2026-10-21T17:35:50.883Z",
+  "savedAs": "docs/changes/CHG-2026-003-spec-recheck/evidence/baseline-review-b1-r3.md",
+  "issueId": "01a15f2e-9af2-769b-b477-107128cf530b",
+  "resultCommentId": "01a15f82-515e-7bf6-a220-aec059ab017d",
+  "authoringInstructionCommentId": "01a15f83-3df2-7260-9f92-9ec01f05cbec",
+  "reviewerAgentId": "b2c66b19-5892-49c9-9a86-a7e2bb95566f",
+  "batch": 1,
+  "completedFormalRounds": 3,
+  "report": {
+    "attachmentId": "01a15f82-4ebc-775b-8c39-cbdf33c01f1e",
+    "url": "https://multica.ai/api/attachments/01a15f82-4ebc-775b-8c39-cbdf33c01f1e/download",
+    "bytes": 18834,
+    "sha256": "1880d54417f9db48ed5fe87145e8a4bba0d799e838d7c507e5be9ce9a267cb72",
+    "preservedAttachmentBytes": true
+  },
+  "independentEvidence": {
+    "attachmentId": "01a15f82-506e-7932-9e5a-8d82ff552dc3",
+    "url": "https://multica.ai/api/attachments/01a15f82-506e-7932-9e5a-8d82ff552dc3/download",
+    "bytes": 54842,
+    "sha256": "697d33ee8afd77bb6547e3bbf6e3401564d42a9f23c6d215e09b21087c14a846",
+    "repositoryCopy": false
+  },
+  "reviewedInput": {
+    "packageSha256": "b34b572fdc8cd4a5d96adcd032ce5be676b754e863dd284c3f55da9295284917",
+    "head": "2feef724939060784f09c78f219999fa17dc9c9d",
+    "sourceBaseline": "57e28479bda434f1e9f507872ff16c53fcfb1830"
+  },
+  "limitation": "Records the original independent result only; post-review record/navigation edits are author-checked, not a fourth formal review or product acceptance."
+}

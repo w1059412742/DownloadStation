@@ -1,0 +1,126 @@
+﻿[
+    {
+        "name":  "R01 fresh isolated database public list empty",
+        "observed":  true
+    },
+    {
+        "name":  "R02 anonymous management read denied 401",
+        "observed":  true
+    },
+    {
+        "name":  "R03 anonymous management create denied 401",
+        "observed":  true
+    },
+    {
+        "name":  "R04 incorrect password body code 401 HTTP 200",
+        "observed":  true
+    },
+    {
+        "name":  "R05 valid isolated credential issues JWT",
+        "observed":  true
+    },
+    {
+        "name":  "R06 GAP anonymous seed creates data in fresh database",
+        "observed":  true
+    },
+    {
+        "name":  "R07 authenticated metadata fixtures created",
+        "observed":  true
+    },
+    {
+        "name":  "R08 software created Published single platform with tag",
+        "observed":  true
+    },
+    {
+        "name":  "R09 category descendants platform keyword combined filter",
+        "observed":  true
+    },
+    {
+        "name":  "R10 missing public software returns 404",
+        "observed":  true
+    },
+    {
+        "name":  "R11 new bind replaces previous default",
+        "observed":  true
+    },
+    {
+        "name":  "R12 hide default promotes other visible version",
+        "observed":  true
+    },
+    {
+        "name":  "R13 hidden version rejected as default",
+        "observed":  true
+    },
+    {
+        "name":  "R14 hidden version download returns 404",
+        "observed":  true
+    },
+    {
+        "name":  "R15 all hidden leaves no default",
+        "observed":  true
+    },
+    {
+        "name":  "R16 showing version without default promotes it",
+        "observed":  true
+    },
+    {
+        "name":  "R17 download returns exact file content",
+        "observed":  true
+    },
+    {
+        "name":  "R18 Range returns 206 exact first three bytes",
+        "observed":  true
+    },
+    {
+        "name":  "R19 wrong software ownership download returns 404",
+        "observed":  true
+    },
+    {
+        "name":  "R20 Draft detail returns 404 and public search empty",
+        "observed":  true
+    },
+    {
+        "name":  "R21 GAP Draft visible versions exposed with FilePath",
+        "observed":  true
+    },
+    {
+        "name":  "R22 GAP Draft version file publicly downloadable",
+        "observed":  true
+    },
+    {
+        "name":  "R23 GAP custom scan reads outside configured library",
+        "observed":  true
+    },
+    {
+        "name":  "R24 GAP binding outside configured library accepted",
+        "observed":  true
+    },
+    {
+        "name":  "R25 GAP missing bound file accepted size zero",
+        "observed":  true
+    },
+    {
+        "name":  "R26 missing physical file download returns 404",
+        "observed":  true
+    },
+    {
+        "name":  "R27 background SHA256 Done and exact digest",
+        "observed":  true
+    },
+    {
+        "name":  "R28 background missing file Failed",
+        "observed":  true
+    },
+    {
+        "name":  "R29 deleting default promotes latest visible version",
+        "observed":  true
+    },
+    {
+        "name":  "R30 API default delete retains physical file",
+        "observed":  true
+    },
+    {
+        "name":  "R31 dashboard authenticated succeeds",
+        "observed":  true
+    }
+]
