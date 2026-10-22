@@ -364,3 +364,5 @@ FodyWeavers.xsd
 
 /03_src/DownloadStation.Server/SoftwareStorage
 /03_src/DownloadStation.Server/uploads
+/.multica
+/.rar
